@@ -1,6 +1,7 @@
 {
   "name": "angular-touch-widgets",
   "version": "0.1.0",
+  "description": "angular-touch-widgets: A collection of simple and beautiful widgets developed for ionic framework",
   "authors": [
     {
       "name": "Andres Garcia Scardilli",
