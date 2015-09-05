@@ -1,0 +1,31 @@
+{
+  "name": "angular-touch-widgets",
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "Andres Garcia Scardilli",
+      "email": "spike886@gmail.com"
+    }
+  ],
+  "main": [
+    "dist/angular-touch-widgets.js",
+    "dist/angular-touch-widgets.css"
+  ],
+  "ignore": [
+    "bower",
+    "src",
+    "test",
+    "gulpfile.js",
+    "karma-*.conf.js",
+    "**/.*"
+  ],
+  "dependencies": {
+    "Ionicons": "ionicons#~2.0.1",
+    "ionic": "~1.1.0"
+  },
+  "devDependencies": {
+    "angular": "~1.4.3",
+    "angular-mocks": ">=1.2.0",
+    "angular-scenario": ">=1.2.0"
+  }
+}

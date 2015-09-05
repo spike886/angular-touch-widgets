@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>Angular Touch Widgets Demo</title>
+
+    <link rel="stylesheet" href="dist/angular-touch-widgets.css">
+</head>
+<body ng-app="DemoApp" ng-controller="demoController">
+<div ng-init="from= '01:00'; to= '03:30';">
+    <time-picker from="from" to="to"></time-picker>
+    <clock-editor from="from" to="to" on-click="alert('click')"></clock-editor>
+</div>
+<div ng-init="time= '30';">
+    <minutes-picker time="time"></minutes-picker>
+    <minutes-editor time="time" on-click="alert('click')"></minutes-editor>
+</div>
+<div ng-init="actualTemp= 10; setTemp= 35;">
+    <thermometer set-temp="setTemp"></thermometer>
+    <thermometer actual-temp="actualTemp" set-temp="setTemp"></thermometer>
+    <input type="number" ng-model="actualTemp"></input>
+</div>
+<div ng-init="orp= 1; ph=7;">
+    <orp-meter orp="orp"></orp-meter>
+    <input type="number" ng-model="orp"></input>
+    <ph-meter ph="ph"></ph-meter>
+    <input type="number" ng-model="ph"></input>
+</div>
+<div ng-init="static= {color: {r: 100, g: 0, b: 255}, intensity: 100}; on=true">
+    <color-intensity intensity="static.intensity"></color-intensity>
+    <color-wheel color="static.color"></color-wheel>
+    <p>
+        r: {{static.color.r}}, g: {{static.color.g}}, b: {{static.color.b}}
+        intesity: {{static.intensity}}
+        on: {{on}}
+    </p>
+    <light-editor on="on" mode-static="static"></light-editor>
+</div>
+<script src="bower/angular/angular.js"></script>
+<script src="bower/angular-animate/angular-animate.js"></script>
+<script src="bower/angular-sanitize/angular-sanitize.js"></script>
+<script src="bower/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="bower/ionic/release/js/ionic.js"></script>
+<script src="bower/ionic/release/js/ionic-angular.js"></script>
+<script src="dist/angular-touch-widgets.js"></script>
+<script src="js/demo.js"></script>
+</body>
+</html>
