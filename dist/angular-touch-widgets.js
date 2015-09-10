@@ -707,12 +707,12 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', []).directive
     scope: {
       actualTemp: '=',
       setTemp: '=',
-      showActual: '=',
+      showActual: '@',
       minTemp: '@',
       maxTemp: '@'
     },
     replace: true,
-    template: '  <svg width="170" height="300" on-tap="onTap($event)" on-drag-start="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)">\
+    template: '  <svg width="170" height="300" on-tap="onTap($event)" on-drag-start="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)" style="margin-left: 52px">\
                             <defs>\
                                 <clipPath id="thermometerClipPath" clipPathUnits="userSpaceOnUse">\
                                     <path d="M54.933,7.69623 C40.936,7.69623 29.639,19.1202 29.639,33.3322 L29.639,183.306 C29.639,183.352 29.638,183.396 29.639,183.443 C16.057,192.031 7,207.31 7,224.752 C7,251.623 28.466,273.417 54.933,273.417 C81.4,273.417 102.867,251.623 102.867,224.752 C102.867,207.296 93.783,192.028 80.183,183.443 C80.183,183.396 80.183,183.352 80.183,183.306 L80.183,33.3322 C80.183,19.1202 68.931,7.69623 54.933,7.69623 Z"></path>\
@@ -733,16 +733,17 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', []).directive
                                 </g>\
                                 <path fill="none" stroke="black" stroke-width="6" stroke-miterlimit="4" d="M54.933,7.69623 C40.936,7.69623 29.639,19.1202 29.639,33.3322 L29.639,183.306 C29.639,183.352 29.638,183.396 29.639,183.443 C16.057,192.031 7,207.31 7,224.752 C7,251.623 28.466,273.417 54.933,273.417 C81.4,273.417 102.867,251.623 102.867,224.752 C102.867,207.296 93.783,192.028 80.183,183.443 C80.183,183.396 80.183,183.352 80.183,183.306 L80.183,33.3322 C80.183,19.1202 68.931,7.69623 54.933,7.69623 Z"></path>\
                             </g>\
-                            <text x="110" ng-attr-y="{{ setTempYPosition + 5 }}" font-size="20" ng-hide="actualTemp && (setTemp < actualTemp)">\
+                            <text x="110" ng-attr-y="{{ setTempYPosition + 5 }}" font-size="20" ng-hide="showActual && (setTemp < actualTemp)">\
                                 {{ setTemp }}°C\
                             </text>\
-                            <text x="110" ng-attr-y="{{ actualTempYPosition + 5 }}" font-size="20" ng-show="actualTemp">\
+                            <text x="110" ng-attr-y="{{ actualTempYPosition + 5 }}" font-size="20" ng-show="showActual">\
                                 {{ actualTemp }}°C\
                             </text>\
                         </svg>',
     controller: function($scope, $ionicScrollDelegate) {
-      if ($scope.showActual === undefined) {
-        $scope.showActual = $scope.actualTemp !== undefined;
+      $scope.isActualTempShowed = $scope.showActual;
+      if ($scope.isActualTempShowed === undefined) {
+        $scope.isActualTempShowed = $scope.actualTemp !== undefined;
       }
       var topPosY;
       var touching = false;
@@ -791,7 +792,7 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', []).directive
         }
       };
       var drawYPosition = function() {
-        if ($scope.showActual) {
+        if ($scope.isActualTempShowed) {
           $scope.actualTempYPosition = temperatureToPositionY($scope.actualTemp);
         }
         $scope.setTempYPosition = temperatureToPositionY($scope.setTemp);

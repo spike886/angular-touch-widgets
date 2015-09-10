@@ -1,7 +1,7 @@
 {
   "name": "ionic",
-  "version": "1.1.0",
-  "codename": "xenon-xerus",
+  "version": "1.0.1",
+  "codename": "vanadium-vaquita",
   "homepage": "https://github.com/driftyco/ionic",
   "authors": [
     "Max Lynch <max@drifty.com>",
@@ -48,19 +48,18 @@
     "js/ionic.js"
   ],
   "dependencies": {
-    "angular": "1.4.3",
-    "angular-animate": "1.4.3",
-    "angular-sanitize": "1.4.3",
+    "angular": "1.3.13",
+    "angular-animate": "1.3.13",
+    "angular-sanitize": "1.3.13",
     "angular-ui-router": "0.2.13"
   },
-  "_release": "1.1.0",
+  "_release": "1.0.1",
   "_resolution": {
     "type": "version",
-    "tag": "v1.1.0",
-    "commit": "01bc2203a6c71953dd35db19f9b64cf6bbeb6bf6"
+    "tag": "v1.0.1",
+    "commit": "4f703ffbfc4b15ddf7f8fedce32ad54931419344"
   },
   "_source": "git://github.com/driftyco/ionic.git",
-  "_target": "~1.1.0",
-  "_originalSource": "ionic",
-  "_direct": true
+  "_target": "~1.0.1",
+  "_originalSource": "ionic"
 }

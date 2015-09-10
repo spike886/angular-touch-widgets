@@ -57,7 +57,7 @@ var lintFiles = [
   'karma-*.conf.js'
 ].concat(sourceFiles);
 
-gulp.task('build', ['src', 'sass']);
+gulp.task('build', ['src', 'sass', 'fonts']);
 
 /**
  * Javascript
@@ -92,6 +92,14 @@ gulp.task('sass', function(done) {
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('./dist/'))
         .on('end', done);
+});
+
+/**
+ * Fonts
+ */
+gulp.task('fonts', function() {
+    gulp.src('./bower/Ionicons/fonts/**/*.{ttf,woff,eot,svg}')
+        .pipe(gulp.dest('./fonts/'));
 });
 
 /**
