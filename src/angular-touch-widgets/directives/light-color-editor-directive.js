@@ -1,6 +1,6 @@
-angular.module('angularTouchWidgets.directives.colorWheel', [])
+angular.module('angularTouchWidgets.directives.lightColorEditor', [])
 
-  .directive('colorWheel', function ($animate) {
+  .directive('lightColorEditor', function ($animate) {
     return {
       restrict: "E",
       replace: true,
@@ -18,7 +18,7 @@ angular.module('angularTouchWidgets.directives.colorWheel', [])
           ctx.drawImage(image, 0, 0, 300, 300); // draw the image on the canvas
         };
 
-        image.src = scope.img || 'img/color-wheel.png';
+        image.src = scope.img || 'img/light-color-editor.png';
 
         var animateClick = function(){
           $animate.addClass(selection, 'pulse animated-quick').then(function () {

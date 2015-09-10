@@ -1,16 +1,16 @@
 angular.module('angularTouchWidgets.directives',
     [
         'angularTouchWidgets.directives.modeSelector',
-        'angularTouchWidgets.directives.lightEditor',
-        'angularTouchWidgets.directives.colorWheel',
-        'angularTouchWidgets.directives.colorIntensity',
+        'angularTouchWidgets.directives.lightViewer',
+        'angularTouchWidgets.directives.lightColorEditor',
+        'angularTouchWidgets.directives.lightIntensityEditor',
+        'angularTouchWidgets.directives.clockViewer',
+        'angularTouchWidgets.directives.timerViewer',
         'angularTouchWidgets.directives.clockEditor',
-        'angularTouchWidgets.directives.minutesEditor',
-        'angularTouchWidgets.directives.timePicker',
-        'angularTouchWidgets.directives.minutesPicker',
-        'angularTouchWidgets.directives.thermometer',
-        'angularTouchWidgets.directives.phMeter',
-        'angularTouchWidgets.directives.orpMeter',
+        'angularTouchWidgets.directives.timerEditor',
+        'angularTouchWidgets.directives.thermometerEditor',
+        'angularTouchWidgets.directives.phViewer',
+        'angularTouchWidgets.directives.orpViewer',
         'angularTouchWidgets.directives.onOffButton'
     ]
 );

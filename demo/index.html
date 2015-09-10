@@ -9,33 +9,33 @@
 </head>
 <body ng-app="DemoApp" ng-controller="demoController">
 <div ng-init="from= '01:00'; to= '03:30';">
-    <time-picker from="from" to="to"></time-picker>
-    <clock-editor from="from" to="to" on-click="alert('click')"></clock-editor>
+    <clock-editor from="from" to="to"></clock-editor>
+    <clock-viewer from="from" to="to" on-click="alert('click')"></clock-viewer>
 </div>
 <div ng-init="time= '30';">
-    <minutes-picker time="time"></minutes-picker>
-    <minutes-editor time="time" on-click="alert('click')"></minutes-editor>
+    <timer-editor time="time"></timer-editor>
+    <timer-viewer time="time" on-click="alert('click')"></timer-viewer>
 </div>
-<div ng-init="actualTemp= 10; setTemp= 35;">
-    <thermometer set-temp="setTemp"></thermometer>
-    <thermometer actual-temp="actualTemp" set-temp="setTemp"></thermometer>
+<div ng-init="actualTemp= 10; setTemp= 25;">
+    <thermometer-editor set-temp="setTemp" min-temp="0" max-temp="30"></thermometer-editor>
+    <thermometer-editor actual-temp="actualTemp" set-temp="setTemp"></thermometer-editor>
     <input type="number" ng-model="actualTemp"></input>
 </div>
 <div ng-init="orp= 1; ph=7;">
-    <orp-meter orp="orp"></orp-meter>
+    <orp-viewer orp="orp"></orp-viewer>
     <input type="number" ng-model="orp"></input>
-    <ph-meter ph="ph"></ph-meter>
+    <ph-viewer ph="ph"></ph-viewer>
     <input type="number" ng-model="ph"></input>
 </div>
 <div ng-init="static= {color: {r: 100, g: 0, b: 255}, intensity: 100}; on=true">
-    <color-intensity intensity="static.intensity"></color-intensity>
-    <color-wheel color="static.color"></color-wheel>
+    <light-intensity-editor intensity="static.intensity"></light-intensity-editor>
+    <light-color-editor color="static.color"></light-color-editor>
     <p>
         r: {{static.color.r}}, g: {{static.color.g}}, b: {{static.color.b}}
         intesity: {{static.intensity}}
         on: {{on}}
     </p>
-    <light-editor on="on" mode-static="static"></light-editor>
+    <light-viewer on="on" mode-static="static"></light-viewer>
 </div>
 <script src="bower/angular/angular.js"></script>
 <script src="bower/angular-animate/angular-animate.js"></script>

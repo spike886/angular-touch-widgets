@@ -1,12 +1,12 @@
-angular.module('angularTouchWidgets.directives.minutesEditor', [])
+angular.module('angularTouchWidgets.directives.timerViewer', [])
 
-    .directive('minutesEditor', function () {
+    .directive('timerViewer', function () {
         return {
             restrict: "E",
             scope: { time: '=', onClick: '&' },
             replace: true,
             template:'<div>\
-                    <svg class="clock-editor" height="200" width="240" ng-click="onClick()">\
+                    <svg class="clock-viewer" height="200" width="240" ng-click="onClick()">\
                         <defs>\
                             <filter id="shadow-{{$id}}" x="-200%" y="-200%" width="450%" height="450%">\
                                 <feOffset result="offOut" in="SourceGraphic" dx="0" dy="2"></feOffset>\

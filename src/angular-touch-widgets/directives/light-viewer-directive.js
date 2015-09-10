@@ -1,11 +1,11 @@
-angular.module('angularTouchWidgets.directives.lightEditor', [])
+angular.module('angularTouchWidgets.directives.lightViewer', [])
 
-    .directive('lightEditor', function () {
+    .directive('lightViewer', function () {
         return {
             restrict: "E",
             replace: true,
             scope: { on: '=', mode: '=', canTurnOff: '=', isRgb: '=', onClick: '&', modeStatic: '=', modeAnimated: '=' },
-            template:'  <div class="light-editor" style="position: relative; height: 260px; width: 240px;">\
+            template:'  <div class="light-viewer" style="position: relative; height: 260px; width: 240px;">\
                             <svg class="fx-zoom-normal" height="260" width="240" style="position: absolute;" ng-show="(on || !canTurnOff)">\
                                 <defs>\
                                     <filter id="shadow-{{$id}}" x="-200%" y="-200%" width="450%" height="450%">\

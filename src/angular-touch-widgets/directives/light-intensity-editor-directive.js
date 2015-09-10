@@ -1,6 +1,6 @@
-angular.module('angularTouchWidgets.directives.colorIntensity', [])
+angular.module('angularTouchWidgets.directives.lightIntensityEditor', [])
 
-  .directive('colorIntensity', function () {
+  .directive('lightIntensityEditor', function () {
     return {
       restrict: "E",
       replace: true,

@@ -2974,11 +2974,11 @@ svg .secondary-line-selection {
 svg .secondary-content-selection {
   fill: #ff4081; }
 
-.clock-editor {
+.clock-viewer {
   height: 200px;
   width: 240px; }
 
-.light-editor {
+.light-viewer {
   height: 260px;
   width: 240px; }
 

@@ -1,9 +1,9 @@
-angular.module('angularTouchWidgets.directives.thermometer', [])
+angular.module('angularTouchWidgets.directives.thermometerEditor', [])
 
-    .directive('thermometer', function () {
+    .directive('thermometerEditor', function () {
         return {
             restrict: "E",
-            scope: { actualTemp: '=', setTemp: '=', showActual: '=' },
+            scope: { actualTemp: '=', setTemp: '=', showActual: '=', minTemp: '@', maxTemp: '@' },
             replace: true,
             template:'  <svg width="170" height="300" on-tap="onTap($event)" on-drag-start="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)">\
                             <defs>\
@@ -41,8 +41,8 @@ angular.module('angularTouchWidgets.directives.thermometer', [])
                 var topPosY;
                 var touching=false;
 
-                var minTemp = -20;
-                var maxTemp = 50;
+                var minTemp = $scope.minTemp || -20;
+                var maxTemp = $scope.maxTemp || 50;
                 var height = 260;
                 var offsetY = 10;
 
