@@ -6,7 +6,7 @@ angular.module('angularTouchWidgets.directives.lightColorEditor', [])
       replace: true,
       scope: { color: '=', img: '@' },
       template:'<div style="height: 300px; width: 300px; margin: auto; position: relative;">\
-                    <canvas var="1" width="300" height="300" ng-click="colorClick($event)"></canvas>\
+                    <canvas var="1" width="300" height="300" on-tap="colorClick($event)"></canvas>\
                     <div ng-style="{\'background-color\': \'rgb(\'+color.r+\',\'+color.g+\',\'+color.b+\')\'}" style="position: absolute; top: 120px; left: 120px; height: 60px; width: 60px; border-radius: 50%; box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.46); transition: background 0.1s; -webkit-transition: background 0.1s"></div>\
                 </div>',
       link: function (scope, element) {

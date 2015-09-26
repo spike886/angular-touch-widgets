@@ -4,9 +4,9 @@ angular.module('angularTouchWidgets.directives.modeSelector', [])
     return {
       restrict: "E",
       scope: { modes: '=', selectedMode: '=' },
-      template:'<div class="mode-selector" ng-class="selectedMode" style="height: 26px; width: 250px; float: right; margin: 10px 10px 10px 0" ng-click="changeMode()">\
+      template:'<div class="mode-selector" ng-class="selectedMode" style="height: 26px; width: 250px; float: right; margin: 10px 10px 10px 0" on-tap="changeMode()">\
                     <div style="height: 100%; width: 100%; transform: translate(112px); -webkit-transform: translate(112px)">\
-                        <div ng-click="changeMode()" class="button-shadow" style="overflow: hidden; position: absolute; width: 40px;height: 40px; border-radius: 20px; transform: translate(125px); -webkit-transform: translate(125px); margin-left: -17px; margin-top: -6px;">\
+                        <div on-tap="changeMode()" class="button-shadow" style="overflow: hidden; position: absolute; width: 40px;height: 40px; border-radius: 20px; transform: translate(125px); -webkit-transform: translate(125px); margin-left: -17px; margin-top: -6px;">\
                             <div class="mode-selector-botton background-animation" style="height: 100%; width: 100%;"></div>\
                         </div>\
                         <div class="transform-animation" style="height: 100%; width: 100%; position: absolute; top: 0; left: 0;" ng-style="{transform: \'rotate(\'+ showMode * (-360 / modes.length)+\'deg)\', \'-webkit-transform\': \'rotate(\'+ showMode * (-360 / modes.length)+\'deg)\'}">\

@@ -15,9 +15,9 @@ angular.module('angularTouchWidgets.directives.lightViewer', [])
                                         <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend>\
                                     </filter>\
                                 </defs>\
-                                <path fill="transparent" stroke-linecap="round" stroke="white" stroke-width="20" d="M 47 195 A 105 105 0 1 1 182 195" filter="url(#shadow-{{$id}})" stroke ng-click="onClick()"></path>\
-                                <path fill="transparent" stroke-linecap="round" stroke="#ccc" stroke-width="2" d="M 47 195 A 105 105 0 1 1 182 195" ng-click="onClick()"></path>\
-                                <path class="line-selection" fill="transparent" stroke-linecap="round" stroke-width="6" ng-attr-d="{{ arc }}" ng-click="onClick()"></path>\
+                                <path fill="transparent" stroke-linecap="round" stroke="white" stroke-width="20" d="M 47 195 A 105 105 0 1 1 182 195" filter="url(#shadow-{{$id}})" stroke on-tap="onClick()"></path>\
+                                <path fill="transparent" stroke-linecap="round" stroke="#ccc" stroke-width="2" d="M 47 195 A 105 105 0 1 1 182 195" on-tap="onClick()"></path>\
+                                <path class="line-selection" fill="transparent" stroke-linecap="round" stroke-width="6" ng-attr-d="{{ arc }}" on-tap="onClick()"></path>\
                             </svg>\
                             <svg class="show-hide-opacity ng-hide" ng-show="canTurnOff" height="260" width="240" style="position: absolute;">\
                                 <defs>\
@@ -29,25 +29,25 @@ angular.module('angularTouchWidgets.directives.lightViewer', [])
                                     </filter>\
                                 </defs>\
                                 \
-                                <g ng-click="toggle()">\
+                                <g on-tap="toggle()">\
                                     <path class="show-hide-opacity button-on-svg" ng-hide="on" fill="transparent" stroke-width="40" d="M 166 204 A 103 103 0 0 1 63 204" filter="url(#button-shadow-{{$id}})"></path>\
                                     <path class="show-hide-opacity button-off-svg" ng-show="on" fill="transparent" stroke-width="40" d="M 166 204 A 103 103 0 0 1 63 204" filter="url(#button-shadow-{{$id}})"></path>\
                                 </g>\
                             </svg>\
                             <div style="height: 0; position: absolute; top: 41px; left: 39px;">\
-                                <div class="fx-rotate-clock round-button center override button-shadow ng-hide" ng-show="isRgb && (on || !canTurnOff) && mode===\'static\'" ng-style="{\'background-color\': \'rgb(\'+modeStatic.color.r+\',\'+modeStatic.color.g+\',\'+modeStatic.color.b+\')\'}" ng-click="onClick()">\
+                                <div class="fx-rotate-clock round-button center override button-shadow ng-hide" ng-show="isRgb && (on || !canTurnOff) && mode===\'static\'" ng-style="{\'background-color\': \'rgb(\'+modeStatic.color.r+\',\'+modeStatic.color.g+\',\'+modeStatic.color.b+\')\'}" on-tap="onClick()">\
                                 </div>\
                                 <div class="fx-rotate-clock round-button center override button-shadow ng-hide" ng-show="isRgb && (on || !canTurnOff) && mode===\'animation\'" style="overflow: hidden;">\
-                                    <div class="animated-color" style="height: 100%; width: 100%;" ng-style="{\'-webkit-animation-duration\': modeAnimated.speed+\'s\', \'animation-duration\': modeAnimated.speed+\'s\', \'-webkit-animation-name\': modeAnimated.animation, \'animation-name\': modeAnimated.animation}" ng-click="onClick()"></div>\
+                                    <div class="animated-color" style="height: 100%; width: 100%;" ng-style="{\'-webkit-animation-duration\': modeAnimated.speed+\'s\', \'animation-duration\': modeAnimated.speed+\'s\', \'-webkit-animation-name\': modeAnimated.animation, \'animation-name\': modeAnimated.animation}" on-tap="onClick()"></div>\
                                 </div>\
-                                <div class="fx-rotate-clock round-button center override button-on button-shadow ng-hide" ng-show="!isRgb && (on || !canTurnOff)" style="height: 150px; width: 150px;" ng-click="onClick()">\
+                                <div class="fx-rotate-clock round-button center override button-on button-shadow ng-hide" ng-show="!isRgb && (on || !canTurnOff)" style="height: 150px; width: 150px;" on-tap="onClick()">\
                                     <span style="font-size: 42px;">{{ modeStatic.intensity }}%</span>\
                                 </div>\
-                                <div class="fx-rotate-clock round-button center override button-off button-shadow ng-hide" ng-show="!(on || !canTurnOff)" ng-click="toggle()">\
+                                <div class="fx-rotate-clock round-button center override button-off button-shadow ng-hide" ng-show="!(on || !canTurnOff)" on-tap="toggle()">\
                                     <span style="font-size: 34px; color: white;">Apagado</span>\
                                 </div>\
                             </div>\
-                            <div class="center show-hide-opacity" ng-show="canTurnOff" style="position: absolute; top: 197px; left: 65px; height: 40px; width: 100px;" ng-click="toggle()">\
+                            <div class="center show-hide-opacity" ng-show="canTurnOff" style="position: absolute; top: 197px; left: 65px; height: 40px; width: 100px;" on-tap="toggle()">\
                                 <i class="icon ion-power" style="color: white; font-size: 26px;"></i>\
                             </div>\
                         </div>',

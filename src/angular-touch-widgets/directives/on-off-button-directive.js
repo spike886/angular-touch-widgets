@@ -16,19 +16,19 @@ angular.module('angularTouchWidgets.directives.onOffButton', [])
                                             <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend>\
                                         </filter>\
                                     </defs>\
-                                    <g ng-click="toggle()">\
+                                    <g on-tap="toggle()">\
                                         <path class="show-hide-opacity button-on-svg" ng-hide="value" fill="transparent" stroke-width="40" d="M 166 204 A 103 103 0 0 1 63 204" filter="url(#button-shadow-{{$id}})"></path>\
                                         <path class="show-hide-opacity button-off-svg" ng-show="value" fill="transparent" stroke-width="40" d="M 166 204 A 103 103 0 0 1 63 204" filter="url(#button-shadow-{{$id}})"></path>\
                                     </g>\
                                 </svg>\
-                                <div class="center" style="position: absolute; top: 197px; left: 65px; height: 40px; width: 100px;" ng-click="toggle()">\
+                                <div class="center" style="position: absolute; top: 197px; left: 65px; height: 40px; width: 100px;" on-tap="toggle()">\
                                     <i class="icon ion-power" style="color: white; font-size: 26px;"></i>\
                                 </div>\
                                 <div style="position: absolute; top: 41px; left: 39px;">\
-                                    <div class="fx-rotate-clock round-button center override button-off button-shadow" ng-hide="value" ng-click="toggle()">\
+                                    <div class="fx-rotate-clock round-button center override button-off button-shadow" ng-hide="value" on-tap="toggle()">\
                                         <span style="font-size: 34px; color: white;">Apagado</span>\
                                     </div>\
-                                    <div class="fx-rotate-clock round-button center override button-on button-shadow" ng-show="value" ng-click="toggle()">\
+                                    <div class="fx-rotate-clock round-button center override button-on button-shadow" ng-show="value" on-tap="toggle()">\
                                         <span style="font-size: 30px;">Encendido</span>\
                                     </div>\
                                 </div>\

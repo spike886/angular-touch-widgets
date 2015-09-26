@@ -6,7 +6,7 @@ angular.module('angularTouchWidgets.directives.clockViewer', [])
       scope: { from: '=', to: '=', onClick: '&' },
       replace: true,
       template:'<div>\
-                    <svg class="clock-viewer" height="200" width="240" ng-click="onClick()">\
+                    <svg class="clock-viewer" height="200" width="240" on-tap="onClick()">\
                         <defs>\
                             <filter id="shadow-{{$id}}" x="-200%" y="-200%" width="450%" height="450%">\
                                 <feOffset result="offOut" in="SourceGraphic" dx="0" dy="2"></feOffset>\
