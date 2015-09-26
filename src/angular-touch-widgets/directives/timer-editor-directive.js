@@ -4,7 +4,7 @@ angular.module('angularTouchWidgets.directives.timerEditor', [])
         return {
             restrict: "E",
             scope: { time: '=' },
-            template:'<div style="margin: auto; height: 250px; width: 350px;" on-drag-start="onTouch($event)" on-touch="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)">\
+            template:'<div style="margin: auto; height: 250px; width: 350px;" on-drag-start="onDrag($event)" on-touch="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)">\
                     <svg id="clock-editor" height="250" width="350">\
                         <defs>\
                             <filter id="shadow-{{$id}}" x="-200%" y="-200%" width="450%" height="450%">\
@@ -89,9 +89,13 @@ angular.module('angularTouchWidgets.directives.timerEditor', [])
                     calculeTime(event);
                 };
 
-                $scope.onTouch = function(event){
+                $scope.onDrag = function(event){
                     touching=true;
                     $ionicScrollDelegate.freezeAllScrolls(true);
+                    calculeTime(event);
+                };
+
+                $scope.onTouch = function(event){
                     calculeTime(event);
                 };
 

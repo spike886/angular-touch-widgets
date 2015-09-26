@@ -1,3 +1,22 @@
+<a name"1.1.0"></a>
+### 1.1.0 "xenon-xerus" (2015-06-30)
+
+
+#### Bug Fixes
+
+
+* **location:** Fix preventDefault logic in ionic.Gesture.gestures.Drag ([e10b5d2](https://github.com/driftyco/ionic/commit/e10b5d2))
+* **menuClose:** Prevent clicking on current page link in sidemenu from disorganizing page hierarchy. Fixes [#4132](https://github.com/driftyco/ionic/issues/4132)) ([a379bfd](https://github.com/driftyco/ionic/commit/a379bfd))
+* **select:** prevent words from being cut off ([e8724e1](https://github.com/driftyco/ionic/commit/e8724e1))
+* **tabs:** adjust tabs and content when hiding the nav bar ([7e4fb15](https://github.com/driftyco/ionic/commit/7e4fb15))
+
+
+#### Features
+
+* **angular:** Upgrade to Angular 1.4 ([355bf6a](https://github.com/driftyco/ionic/commit/355bf6a))
+* **clearCache:** clearCache returns a promise ([336c388](https://github.com/driftyco/ionic/commit/336c388))
+
+
 <a name"1.0.1"></a>
 ### 1.0.1 "vanadium-vaquita" (2015-06-30)
 
