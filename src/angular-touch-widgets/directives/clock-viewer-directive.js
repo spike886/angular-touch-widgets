@@ -3,7 +3,7 @@ angular.module('angularTouchWidgets.directives.clockViewer', [])
   .directive('clockViewer', function () {
     return {
       restrict: "E",
-      scope: { from: '=', to: '=', onClick: '&' },
+      scope: { from: '=', to: '=', onTab: '&' },
       replace: true,
       template:'<div>\
                     <svg class="clock-viewer" height="200" width="240" on-tap="onClick()">\
