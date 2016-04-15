@@ -3,7 +3,7 @@ angular.module('angularTouchWidgets.directives.timerEditor', [])
     .directive('timerEditor', function () {
         return {
             restrict: "E",
-            scope: { time: '=', scrollHandler: '@', offset: '=' },
+            scope: { time: '=' },
             template:'<div style="margin: auto; height: 250px; width: 350px;" on-drag-start="onDrag($event)" on-touch="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)">\
                     <svg id="clock-editor" height="250" width="350">\
                         <defs>\
@@ -74,19 +74,9 @@ angular.module('angularTouchWidgets.directives.timerEditor', [])
                 };
 
                 var calculeTime = function(event){
-                    var scroll = {top: 0, left: 0};
-                    if($scope.scrollHandler){
-                        scroll = $ionicScrollDelegate.$getByHandle($scope.scrollHandler).getScrollPosition();
-                    }
-                    var touch={x: event.gesture.srcEvent.layerX + scroll.left, y: event.gesture.srcEvent.layerY + scroll.top};
-                    if(touch.y<0){
-                        touch.x += event.gesture.touches[0].clientX;
-                        touch.y += event.gesture.touches[0].clientY;
-                    }
-                    var offset = {top: 0, left: 0};
-                    if($scope.offset) {
-                        offset = {top: event.currentTarget.offsetTop, left: event.currentTarget.offsetLeft};
-                    }
+                    var touch={x: event.gesture.touches[0].clientX, y: event.gesture.touches[0].clientY};
+                    var offset = event.currentTarget.getBoundingClientRect();
+
                     var centerPos={x: 175 + offset.left, y: 125 + offset.top};
 
                     var angle=getAngle(centerPos.x, centerPos.y, touch.x, touch.y);

@@ -9,16 +9,16 @@
 </head>
 <body ng-app="DemoApp" ng-controller="demoController">
 <div ng-init="from= '01:00'; to= '03:30';">
-    <clock-editor from="from" to="to" offset="true"></clock-editor>
+    <clock-editor from="from" to="to"></clock-editor>
     <clock-viewer from="from" to="to" on-tab="alert('click')"></clock-viewer>
 </div>
 <div ng-init="time= '30';">
-    <timer-editor time="time" offset="true"></timer-editor>
+    <timer-editor time="time"></timer-editor>
     <timer-viewer time="time" on-tab="alert('click')"></timer-viewer>
 </div>
 <div ng-init="actualTemp= 10; setTemp= 25;">
-    <thermometer-editor set-temp="setTemp" min-temp="0" max-temp="30" offset="true"></thermometer-editor>
-    <thermometer-editor actual-temp="actualTemp" set-temp="setTemp" offset="true"></thermometer-editor>
+    <thermometer-editor set-temp="setTemp" min-temp="0" max-temp="30"></thermometer-editor>
+    <thermometer-editor actual-temp="actualTemp" set-temp="setTemp"></thermometer-editor>
     <input type="number" ng-model="actualTemp"></input>
 </div>
 <div ng-init="orp= 1; ph=7;">

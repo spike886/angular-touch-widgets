@@ -27,8 +27,9 @@ angular.module('angularTouchWidgets.directives.lightColorEditor', [])
         };
 
         scope.colorClick = function(event){
-          var touch= {x: event.gesture.touches[0].offsetX, y: event.gesture.touches[0].offsetY };
-          var pixel = ctx.getImageData(touch.x, touch.y, 1, 1).data;
+          var touch={x: event.gesture.touches[0].clientX, y: event.gesture.touches[0].clientY};
+          var offset = event.currentTarget.getBoundingClientRect();
+          var pixel = ctx.getImageData(touch.x - offset.left, touch.y - offset.top, 1, 1).data;
 
           if (pixel[3] !== 0) {
             angular.copy({r: pixel[0], g: pixel[1], b: pixel[2]}, scope.color);

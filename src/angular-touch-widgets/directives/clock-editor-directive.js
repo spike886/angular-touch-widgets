@@ -3,7 +3,7 @@ angular.module('angularTouchWidgets.directives.clockEditor', [])
   .directive('clockEditor', function () {
     return {
       restrict: "E",
-      scope: { from: '=', to: '=', scrollHandler: '@', offset: '=' },
+      scope: { from: '=', to: '=' },
       template:'<div style="margin: auto; height: 250px; width: 350px;" on-drag-start="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)">\
                     <svg id="clock-editor" height="250" width="350">\
                         <defs>\
@@ -153,19 +153,9 @@ angular.module('angularTouchWidgets.directives.clockEditor', [])
           touching=true;
           $ionicScrollDelegate.freezeAllScrolls(true);
 
-          var scroll = {top: 0, left: 0};
-          if($scope.scrollHandler){
-              scroll = $ionicScrollDelegate.$getByHandle($scope.scrollHandler).getScrollPosition();
-          }
-          var firstTouch={x: event.gesture.srcEvent.layerX + scroll.left, y: event.gesture.srcEvent.layerY + scroll.top};
-          if(firstTouch.y<0){
-            firstTouch.x += event.gesture.touches[0].clientX;
-            firstTouch.y += event.gesture.touches[0].clientY;
-          }
-          var offset = {top: 0, left: 0};
-          if($scope.offset) {
-              offset = {top: event.currentTarget.offsetTop, left: event.currentTarget.offsetLeft};
-          }
+          var firstTouch={x: event.gesture.touches[0].clientX, y: event.gesture.touches[0].clientY};
+          var offset = event.currentTarget.getBoundingClientRect();
+
           centerPos={x: offset.left + 175, y: offset.top + 125};
 
           baseTime=getModule(centerPos.x, centerPos.y, firstTouch.x, firstTouch.y)<70 ? 0 : 12;
@@ -183,15 +173,7 @@ angular.module('angularTouchWidgets.directives.clockEditor', [])
 
         $scope.drag = function(event){
           if(touching){
-            var scroll = {top: 0, left: 0};
-            if($scope.scrollHandler){
-                scroll = $ionicScrollDelegate.$getByHandle($scope.scrollHandler).getScrollPosition();
-            }
-            var lastTouch={x: event.gesture.srcEvent.layerX + scroll.left, y: event.gesture.srcEvent.layerY + scroll.top};
-            if(lastTouch.y<0){
-              lastTouch.x += event.gesture.touches[0].clientX;
-              lastTouch.y += event.gesture.touches[0].clientY;
-            }
+            var lastTouch={x: event.gesture.touches[0].clientX, y: event.gesture.touches[0].clientY};
 
             var angle=getAngle(centerPos.x, centerPos.y, lastTouch.x, lastTouch.y);
             if((lastAngle>270 && angle<90) || (angle>270 && lastAngle<90)){

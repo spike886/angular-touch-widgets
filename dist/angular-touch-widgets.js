@@ -11,9 +11,7 @@ angular.module('angularTouchWidgets.directives.clockEditor', []).directive('cloc
     restrict: "E",
     scope: {
       from: '=',
-      to: '=',
-      scrollHandler: '@',
-      offset: '='
+      to: '='
     },
     template: '<div style="margin: auto; height: 250px; width: 350px;" on-drag-start="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)">\
                     <svg id="clock-editor" height="250" width="350">\
@@ -158,31 +156,11 @@ angular.module('angularTouchWidgets.directives.clockEditor', []).directive('cloc
       $scope.onTouch = function(event) {
         touching = true;
         $ionicScrollDelegate.freezeAllScrolls(true);
-        var scroll = {
-          top: 0,
-          left: 0
-        };
-        if ($scope.scrollHandler) {
-          scroll = $ionicScrollDelegate.$getByHandle($scope.scrollHandler).getScrollPosition();
-        }
         var firstTouch = {
-          x: event.gesture.srcEvent.layerX + scroll.left,
-          y: event.gesture.srcEvent.layerY + scroll.top
+          x: event.gesture.touches[0].clientX,
+          y: event.gesture.touches[0].clientY
         };
-        if (firstTouch.y < 0) {
-          firstTouch.x += event.gesture.touches[0].clientX;
-          firstTouch.y += event.gesture.touches[0].clientY;
-        }
-        var offset = {
-          top: 0,
-          left: 0
-        };
-        if ($scope.offset) {
-          offset = {
-            top: event.currentTarget.offsetTop,
-            left: event.currentTarget.offsetLeft
-          };
-        }
+        var offset = event.currentTarget.getBoundingClientRect();
         centerPos = {
           x: offset.left + 175,
           y: offset.top + 125
@@ -199,21 +177,10 @@ angular.module('angularTouchWidgets.directives.clockEditor', []).directive('cloc
       };
       $scope.drag = function(event) {
         if (touching) {
-          var scroll = {
-            top: 0,
-            left: 0
-          };
-          if ($scope.scrollHandler) {
-            scroll = $ionicScrollDelegate.$getByHandle($scope.scrollHandler).getScrollPosition();
-          }
           var lastTouch = {
-            x: event.gesture.srcEvent.layerX + scroll.left,
-            y: event.gesture.srcEvent.layerY + scroll.top
+            x: event.gesture.touches[0].clientX,
+            y: event.gesture.touches[0].clientY
           };
-          if (lastTouch.y < 0) {
-            lastTouch.x += event.gesture.touches[0].clientX;
-            lastTouch.y += event.gesture.touches[0].clientY;
-          }
           var angle = getAngle(centerPos.x, centerPos.y, lastTouch.x, lastTouch.y);
           if ((lastAngle > 270 && angle < 90) || (angle > 270 && lastAngle < 90)) {
             baseTime = baseTime === 0 ? 12 : 0;
@@ -389,10 +356,11 @@ angular.module('angularTouchWidgets.directives.lightColorEditor', []).directive(
       };
       scope.colorClick = function(event) {
         var touch = {
-          x: event.gesture.touches[0].offsetX,
-          y: event.gesture.touches[0].offsetY
+          x: event.gesture.touches[0].clientX,
+          y: event.gesture.touches[0].clientY
         };
-        var pixel = ctx.getImageData(touch.x, touch.y, 1, 1).data;
+        var offset = event.currentTarget.getBoundingClientRect();
+        var pixel = ctx.getImageData(touch.x - offset.left, touch.y - offset.top, 1, 1).data;
         if (pixel[3] !== 0) {
           angular.copy({
             r: pixel[0],
@@ -739,9 +707,7 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', []).directive
       setTemp: '=',
       showActual: '@',
       minTemp: '@',
-      maxTemp: '@',
-      scrollHandler: '@',
-      offset: '='
+      maxTemp: '@'
     },
     replace: true,
     template: '  <svg width="170" height="300" on-tap="onTap($event)" on-drag-start="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)" style="margin-left: 52px">\
@@ -787,19 +753,10 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', []).directive
         return height - YPos + offsetY;
       };
       var positionYToTemperature = function(event) {
-        var scroll = {top: 0};
-        if ($scope.scrollHandler) {
-          scroll = $ionicScrollDelegate.$getByHandle($scope.scrollHandler).getScrollPosition();
-        }
-        var offset = {top: 0};
-        if ($scope.offset) {
-          offset = {top: event.currentTarget.offsetTop};
-        }
-        var touch = {y: event.gesture.srcEvent.layerY + scroll.top - offset.top};
-        if (touch.y < 0) {
-          touch.y += event.gesture.touches[0].clientY;
-        }
-        var temp = Math.round((((height - touch.y + offsetY) / height) * (maxTemp - minTemp)) + minTemp);
+        var touch = {y: event.gesture.touches[0].clientY};
+        var offset = event.currentTarget.getBoundingClientRect();
+        var relativeTouch = touch.y - offset.top;
+        var temp = Math.round((((height - relativeTouch + offsetY) / height) * (maxTemp - minTemp)) + minTemp);
         if (temp > maxTemp) {
           temp = maxTemp;
         } else if (temp < minTemp) {
@@ -846,11 +803,7 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', []).directive
 angular.module('angularTouchWidgets.directives.timerEditor', []).directive('timerEditor', function() {
   return {
     restrict: "E",
-    scope: {
-      time: '=',
-      scrollHandler: '@',
-      offset: '='
-    },
+    scope: {time: '='},
     template: '<div style="margin: auto; height: 250px; width: 350px;" on-drag-start="onDrag($event)" on-touch="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)">\
                     <svg id="clock-editor" height="250" width="350">\
                         <defs>\
@@ -919,31 +872,11 @@ angular.module('angularTouchWidgets.directives.timerEditor', []).directive('time
         $scope.semiCircle = regularSemiCircle(175, 125, 100, -90, angle, false);
       };
       var calculeTime = function(event) {
-        var scroll = {
-          top: 0,
-          left: 0
-        };
-        if ($scope.scrollHandler) {
-          scroll = $ionicScrollDelegate.$getByHandle($scope.scrollHandler).getScrollPosition();
-        }
         var touch = {
-          x: event.gesture.srcEvent.layerX + scroll.left,
-          y: event.gesture.srcEvent.layerY + scroll.top
+          x: event.gesture.touches[0].clientX,
+          y: event.gesture.touches[0].clientY
         };
-        if (touch.y < 0) {
-          touch.x += event.gesture.touches[0].clientX;
-          touch.y += event.gesture.touches[0].clientY;
-        }
-        var offset = {
-          top: 0,
-          left: 0
-        };
-        if ($scope.offset) {
-          offset = {
-            top: event.currentTarget.offsetTop,
-            left: event.currentTarget.offsetLeft
-          };
-        }
+        var offset = event.currentTarget.getBoundingClientRect();
         var centerPos = {
           x: 175 + offset.left,
           y: 125 + offset.top

@@ -3,7 +3,7 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', [])
     .directive('thermometerEditor', function () {
         return {
             restrict: "E",
-            scope: { actualTemp: '=', setTemp: '=', showActual: '@', minTemp: '@', maxTemp: '@', scrollHandler: '@', offset: '=' },
+            scope: { actualTemp: '=', setTemp: '=', showActual: '@', minTemp: '@', maxTemp: '@'},
             replace: true,
             template:'  <svg width="170" height="300" on-tap="onTap($event)" on-drag-start="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)" style="margin-left: 52px">\
                             <defs>\
@@ -52,19 +52,10 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', [])
                 };
 
                 var positionYToTemperature = function(event){
-                    var scroll = {top: 0};
-                    if($scope.scrollHandler){
-                        scroll = $ionicScrollDelegate.$getByHandle($scope.scrollHandler).getScrollPosition();
-                    }
-                    var offset = {top: 0};
-                    if($scope.offset) {
-                        offset = {top: event.currentTarget.offsetTop};
-                    }
-                    var touch={ y: event.gesture.srcEvent.layerY + scroll.top - offset.top};
-                    if(touch.y<0){
-                        touch.y += event.gesture.touches[0].clientY;
-                    }
-                    var temp = Math.round((((height - touch.y + offsetY) / height) * (maxTemp - minTemp)) + minTemp);
+                    var touch={y: event.gesture.touches[0].clientY};
+                    var offset = event.currentTarget.getBoundingClientRect();
+                    var relativeTouch= touch.y - offset.top;
+                    var temp = Math.round((((height - relativeTouch + offsetY) / height) * (maxTemp - minTemp)) + minTemp);
                     if(temp > maxTemp){
                         temp = maxTemp;
                     }else if(temp < minTemp){
