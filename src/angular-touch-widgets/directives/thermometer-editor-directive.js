@@ -3,7 +3,7 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', [])
     .directive('thermometerEditor', function () {
         return {
             restrict: "E",
-            scope: { actualTemp: '=', setTemp: '=', showActual: '@', minTemp: '@', maxTemp: '@' },
+            scope: { actualTemp: '=', setTemp: '=', showActual: '@', minTemp: '@', maxTemp: '@', scrollHandler: '@', offset: '=' },
             replace: true,
             template:'  <svg width="170" height="300" on-tap="onTap($event)" on-drag-start="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)" style="margin-left: 52px">\
                             <defs>\
@@ -39,11 +39,10 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', [])
                     $scope.isActualTempShowed = $scope.actualTemp !== undefined
                 }
 
-                var topPosY;
                 var touching=false;
 
-                var minTemp = $scope.minTemp || -20;
-                var maxTemp = $scope.maxTemp || 50;
+                var minTemp = parseInt($scope.minTemp) || -20;
+                var maxTemp = parseInt($scope.maxTemp) || 50;
                 var height = 260;
                 var offsetY = 10;
 
@@ -52,8 +51,20 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', [])
                     return height - YPos + offsetY;
                 };
 
-                var positionYToTemperature = function(PosY){
-                    var temp = Math.round((((height - PosY + offsetY) / height) * (maxTemp - minTemp)) + minTemp);
+                var positionYToTemperature = function(event){
+                    var scroll = {top: 0};
+                    if($scope.scrollHandler){
+                        scroll = $ionicScrollDelegate.$getByHandle($scope.scrollHandler).getScrollPosition();
+                    }
+                    var offset = {top: 0};
+                    if($scope.offset) {
+                        offset = {top: event.currentTarget.offsetTop};
+                    }
+                    var touch={ y: event.gesture.srcEvent.layerY + scroll.top - offset.top};
+                    if(touch.y<0){
+                        touch.y += event.gesture.touches[0].clientY;
+                    }
+                    var temp = Math.round((((height - touch.y + offsetY) / height) * (maxTemp - minTemp)) + minTemp);
                     if(temp > maxTemp){
                         temp = maxTemp;
                     }else if(temp < minTemp){
@@ -71,13 +82,7 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', [])
                     touching=true;
                     $ionicScrollDelegate.freezeAllScrolls(true);
 
-                    topPosY = event.currentTarget.offsetTop;
-
-                    var posY=event.gesture.srcEvent.layerY-topPosY;
-                    if(posY<0){
-                        posY += event.gesture.touches[0].clientY;
-                    }
-                    $scope.setTemp = positionYToTemperature(posY);
+                    $scope.setTemp = positionYToTemperature(event);
                 };
 
                 $scope.onRelease = function(){
@@ -87,11 +92,7 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', [])
 
                 $scope.drag = function(event){
                     if(touching){
-                        var posY=event.gesture.srcEvent.layerY-topPosY;
-                        if(posY<0){
-                            posY += event.gesture.touches[0].clientY;
-                        }
-                        $scope.setTemp = positionYToTemperature(posY);
+                        $scope.setTemp = positionYToTemperature(event);
                     }
                 };
 

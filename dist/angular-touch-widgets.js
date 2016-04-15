@@ -11,7 +11,9 @@ angular.module('angularTouchWidgets.directives.clockEditor', []).directive('cloc
     restrict: "E",
     scope: {
       from: '=',
-      to: '='
+      to: '=',
+      scrollHandler: '@',
+      offset: '='
     },
     template: '<div style="margin: auto; height: 250px; width: 350px;" on-drag-start="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)">\
                     <svg id="clock-editor" height="250" width="350">\
@@ -156,17 +158,34 @@ angular.module('angularTouchWidgets.directives.clockEditor', []).directive('cloc
       $scope.onTouch = function(event) {
         touching = true;
         $ionicScrollDelegate.freezeAllScrolls(true);
+        var scroll = {
+          top: 0,
+          left: 0
+        };
+        if ($scope.scrollHandler) {
+          scroll = $ionicScrollDelegate.$getByHandle($scope.scrollHandler).getScrollPosition();
+        }
         var firstTouch = {
-          x: event.gesture.srcEvent.layerX,
-          y: event.gesture.srcEvent.layerY
+          x: event.gesture.srcEvent.layerX + scroll.left,
+          y: event.gesture.srcEvent.layerY + scroll.top
         };
         if (firstTouch.y < 0) {
           firstTouch.x += event.gesture.touches[0].clientX;
           firstTouch.y += event.gesture.touches[0].clientY;
         }
+        var offset = {
+          top: 0,
+          left: 0
+        };
+        if ($scope.offset) {
+          offset = {
+            top: event.currentTarget.offsetTop,
+            left: event.currentTarget.offsetLeft
+          };
+        }
         centerPos = {
-          x: event.currentTarget.offsetLeft + 175,
-          y: event.currentTarget.offsetTop + 125
+          x: offset.left + 175,
+          y: offset.top + 125
         };
         baseTime = getModule(centerPos.x, centerPos.y, firstTouch.x, firstTouch.y) < 70 ? 0 : 12;
         lastAngle = getAngle(centerPos.x, centerPos.y, firstTouch.x, firstTouch.y);
@@ -180,9 +199,16 @@ angular.module('angularTouchWidgets.directives.clockEditor', []).directive('cloc
       };
       $scope.drag = function(event) {
         if (touching) {
+          var scroll = {
+            top: 0,
+            left: 0
+          };
+          if ($scope.scrollHandler) {
+            scroll = $ionicScrollDelegate.$getByHandle($scope.scrollHandler).getScrollPosition();
+          }
           var lastTouch = {
-            x: event.gesture.srcEvent.layerX,
-            y: event.gesture.srcEvent.layerY
+            x: event.gesture.srcEvent.layerX + scroll.left,
+            y: event.gesture.srcEvent.layerY + scroll.top
           };
           if (lastTouch.y < 0) {
             lastTouch.x += event.gesture.touches[0].clientX;
@@ -226,11 +252,11 @@ angular.module('angularTouchWidgets.directives.clockViewer', []).directive('cloc
     scope: {
       from: '=',
       to: '=',
-      onClick: '&'
+      onTab: '&'
     },
     replace: true,
     template: '<div>\
-                    <svg class="clock-viewer" height="200" width="240" ng-click="onClick()">\
+                    <svg class="clock-viewer" height="200" width="240" on-tap="onClick()">\
                         <defs>\
                             <filter id="shadow-{{$id}}" x="-200%" y="-200%" width="450%" height="450%">\
                                 <feOffset result="offOut" in="SourceGraphic" dx="0" dy="2"></feOffset>\
@@ -345,7 +371,7 @@ angular.module('angularTouchWidgets.directives.lightColorEditor', []).directive(
       img: '@'
     },
     template: '<div style="height: 300px; width: 300px; margin: auto; position: relative;">\
-                    <canvas var="1" width="300" height="300" ng-click="colorClick($event)"></canvas>\
+                    <canvas var="1" width="300" height="300" on-tap="colorClick($event)"></canvas>\
                     <div ng-style="{\'background-color\': \'rgb(\'+color.r+\',\'+color.g+\',\'+color.b+\')\'}" style="position: absolute; top: 120px; left: 120px; height: 60px; width: 60px; border-radius: 50%; box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.46); transition: background 0.1s; -webkit-transition: background 0.1s"></div>\
                 </div>',
     link: function(scope, element) {
@@ -400,7 +426,7 @@ angular.module('angularTouchWidgets.directives.lightViewer', []).directive('ligh
       mode: '=',
       canTurnOff: '=',
       isRgb: '=',
-      onClick: '&',
+      onTab: '&',
       modeStatic: '=',
       modeAnimated: '='
     },
@@ -414,9 +440,9 @@ angular.module('angularTouchWidgets.directives.lightViewer', []).directive('ligh
                                         <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend>\
                                     </filter>\
                                 </defs>\
-                                <path fill="transparent" stroke-linecap="round" stroke="white" stroke-width="20" d="M 47 195 A 105 105 0 1 1 182 195" filter="url(#shadow-{{$id}})" stroke ng-click="onClick()"></path>\
-                                <path fill="transparent" stroke-linecap="round" stroke="#ccc" stroke-width="2" d="M 47 195 A 105 105 0 1 1 182 195" ng-click="onClick()"></path>\
-                                <path class="line-selection" fill="transparent" stroke-linecap="round" stroke-width="6" ng-attr-d="{{ arc }}" ng-click="onClick()"></path>\
+                                <path fill="transparent" stroke-linecap="round" stroke="white" stroke-width="20" d="M 47 195 A 105 105 0 1 1 182 195" filter="url(#shadow-{{$id}})" stroke on-tap="onClick()"></path>\
+                                <path fill="transparent" stroke-linecap="round" stroke="#ccc" stroke-width="2" d="M 47 195 A 105 105 0 1 1 182 195" on-tap="onClick()"></path>\
+                                <path class="line-selection" fill="transparent" stroke-linecap="round" stroke-width="6" ng-attr-d="{{ arc }}" on-tap="onClick()"></path>\
                             </svg>\
                             <svg class="show-hide-opacity ng-hide" ng-show="canTurnOff" height="260" width="240" style="position: absolute;">\
                                 <defs>\
@@ -428,25 +454,25 @@ angular.module('angularTouchWidgets.directives.lightViewer', []).directive('ligh
                                     </filter>\
                                 </defs>\
                                 \
-                                <g ng-click="toggle()">\
+                                <g on-tap="toggle()">\
                                     <path class="show-hide-opacity button-on-svg" ng-hide="on" fill="transparent" stroke-width="40" d="M 166 204 A 103 103 0 0 1 63 204" filter="url(#button-shadow-{{$id}})"></path>\
                                     <path class="show-hide-opacity button-off-svg" ng-show="on" fill="transparent" stroke-width="40" d="M 166 204 A 103 103 0 0 1 63 204" filter="url(#button-shadow-{{$id}})"></path>\
                                 </g>\
                             </svg>\
                             <div style="height: 0; position: absolute; top: 41px; left: 39px;">\
-                                <div class="fx-rotate-clock round-button center override button-shadow ng-hide" ng-show="isRgb && (on || !canTurnOff) && mode===\'static\'" ng-style="{\'background-color\': \'rgb(\'+modeStatic.color.r+\',\'+modeStatic.color.g+\',\'+modeStatic.color.b+\')\'}" ng-click="onClick()">\
+                                <div class="fx-rotate-clock round-button center override button-shadow ng-hide" ng-show="isRgb && (on || !canTurnOff) && mode===\'static\'" ng-style="{\'background-color\': \'rgb(\'+modeStatic.color.r+\',\'+modeStatic.color.g+\',\'+modeStatic.color.b+\')\'}" on-tap="onClick()">\
                                 </div>\
                                 <div class="fx-rotate-clock round-button center override button-shadow ng-hide" ng-show="isRgb && (on || !canTurnOff) && mode===\'animation\'" style="overflow: hidden;">\
-                                    <div class="animated-color" style="height: 100%; width: 100%;" ng-style="{\'-webkit-animation-duration\': modeAnimated.speed+\'s\', \'animation-duration\': modeAnimated.speed+\'s\', \'-webkit-animation-name\': modeAnimated.animation, \'animation-name\': modeAnimated.animation}" ng-click="onClick()"></div>\
+                                    <div class="animated-color" style="height: 100%; width: 100%;" ng-style="{\'-webkit-animation-duration\': modeAnimated.speed+\'s\', \'animation-duration\': modeAnimated.speed+\'s\', \'-webkit-animation-name\': modeAnimated.animation, \'animation-name\': modeAnimated.animation}" on-tap="onClick()"></div>\
                                 </div>\
-                                <div class="fx-rotate-clock round-button center override button-on button-shadow ng-hide" ng-show="!isRgb && (on || !canTurnOff)" style="height: 150px; width: 150px;" ng-click="onClick()">\
+                                <div class="fx-rotate-clock round-button center override button-on button-shadow ng-hide" ng-show="!isRgb && (on || !canTurnOff)" style="height: 150px; width: 150px;" on-tap="onClick()">\
                                     <span style="font-size: 42px;">{{ modeStatic.intensity }}%</span>\
                                 </div>\
-                                <div class="fx-rotate-clock round-button center override button-off button-shadow ng-hide" ng-show="!(on || !canTurnOff)" ng-click="toggle()">\
+                                <div class="fx-rotate-clock round-button center override button-off button-shadow ng-hide" ng-show="!(on || !canTurnOff)" on-tap="toggle()">\
                                     <span style="font-size: 34px; color: white;">Apagado</span>\
                                 </div>\
                             </div>\
-                            <div class="center show-hide-opacity" ng-show="canTurnOff" style="position: absolute; top: 197px; left: 65px; height: 40px; width: 100px;" ng-click="toggle()">\
+                            <div class="center show-hide-opacity" ng-show="canTurnOff" style="position: absolute; top: 197px; left: 65px; height: 40px; width: 100px;" on-tap="toggle()">\
                                 <i class="icon ion-power" style="color: white; font-size: 26px;"></i>\
                             </div>\
                         </div>',
@@ -505,9 +531,9 @@ angular.module('angularTouchWidgets.directives.modeSelector', []).directive('mod
       modes: '=',
       selectedMode: '='
     },
-    template: '<div class="mode-selector" ng-class="selectedMode" style="height: 26px; width: 250px; float: right; margin: 10px 10px 10px 0" ng-click="changeMode()">\
+    template: '<div class="mode-selector" ng-class="selectedMode" style="height: 26px; width: 250px; float: right; margin: 10px 10px 10px 0" on-tap="changeMode()">\
                     <div style="height: 100%; width: 100%; transform: translate(112px); -webkit-transform: translate(112px)">\
-                        <div ng-click="changeMode()" class="button-shadow" style="overflow: hidden; position: absolute; width: 40px;height: 40px; border-radius: 20px; transform: translate(125px); -webkit-transform: translate(125px); margin-left: -17px; margin-top: -6px;">\
+                        <div on-tap="changeMode()" class="button-shadow" style="overflow: hidden; position: absolute; width: 40px;height: 40px; border-radius: 20px; transform: translate(125px); -webkit-transform: translate(125px); margin-left: -17px; margin-top: -6px;">\
                             <div class="mode-selector-botton background-animation" style="height: 100%; width: 100%;"></div>\
                         </div>\
                         <div class="transform-animation" style="height: 100%; width: 100%; position: absolute; top: 0; left: 0;" ng-style="{transform: \'rotate(\'+ showMode * (-360 / modes.length)+\'deg)\', \'-webkit-transform\': \'rotate(\'+ showMode * (-360 / modes.length)+\'deg)\'}">\
@@ -560,19 +586,19 @@ angular.module('angularTouchWidgets.directives.onOffButton', []).directive('onOf
                                             <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend>\
                                         </filter>\
                                     </defs>\
-                                    <g ng-click="toggle()">\
+                                    <g on-tap="toggle()">\
                                         <path class="show-hide-opacity button-on-svg" ng-hide="value" fill="transparent" stroke-width="40" d="M 166 204 A 103 103 0 0 1 63 204" filter="url(#button-shadow-{{$id}})"></path>\
                                         <path class="show-hide-opacity button-off-svg" ng-show="value" fill="transparent" stroke-width="40" d="M 166 204 A 103 103 0 0 1 63 204" filter="url(#button-shadow-{{$id}})"></path>\
                                     </g>\
                                 </svg>\
-                                <div class="center" style="position: absolute; top: 197px; left: 65px; height: 40px; width: 100px;" ng-click="toggle()">\
+                                <div class="center" style="position: absolute; top: 197px; left: 65px; height: 40px; width: 100px;" on-tap="toggle()">\
                                     <i class="icon ion-power" style="color: white; font-size: 26px;"></i>\
                                 </div>\
                                 <div style="position: absolute; top: 41px; left: 39px;">\
-                                    <div class="fx-rotate-clock round-button center override button-off button-shadow" ng-hide="value" ng-click="toggle()">\
+                                    <div class="fx-rotate-clock round-button center override button-off button-shadow" ng-hide="value" on-tap="toggle()">\
                                         <span style="font-size: 34px; color: white;">Apagado</span>\
                                     </div>\
-                                    <div class="fx-rotate-clock round-button center override button-on button-shadow" ng-show="value" ng-click="toggle()">\
+                                    <div class="fx-rotate-clock round-button center override button-on button-shadow" ng-show="value" on-tap="toggle()">\
                                         <span style="font-size: 30px;">Encendido</span>\
                                     </div>\
                                 </div>\
@@ -709,7 +735,9 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', []).directive
       setTemp: '=',
       showActual: '@',
       minTemp: '@',
-      maxTemp: '@'
+      maxTemp: '@',
+      scrollHandler: '@',
+      offset: '='
     },
     replace: true,
     template: '  <svg width="170" height="300" on-tap="onTap($event)" on-drag-start="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)" style="margin-left: 52px">\
@@ -745,18 +773,29 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', []).directive
       if ($scope.isActualTempShowed === undefined) {
         $scope.isActualTempShowed = $scope.actualTemp !== undefined;
       }
-      var topPosY;
       var touching = false;
-      var minTemp = $scope.minTemp || -20;
-      var maxTemp = $scope.maxTemp || 50;
+      var minTemp = parseInt($scope.minTemp) || -20;
+      var maxTemp = parseInt($scope.maxTemp) || 50;
       var height = 260;
       var offsetY = 10;
       var temperatureToPositionY = function(temperature) {
         var YPos = height * (temperature - minTemp) / (maxTemp - minTemp);
         return height - YPos + offsetY;
       };
-      var positionYToTemperature = function(PosY) {
-        var temp = Math.round((((height - PosY + offsetY) / height) * (maxTemp - minTemp)) + minTemp);
+      var positionYToTemperature = function(event) {
+        var scroll = {top: 0};
+        if ($scope.scrollHandler) {
+          scroll = $ionicScrollDelegate.$getByHandle($scope.scrollHandler).getScrollPosition();
+        }
+        var offset = {top: 0};
+        if ($scope.offset) {
+          offset = {top: event.currentTarget.offsetTop};
+        }
+        var touch = {y: event.gesture.srcEvent.layerY + scroll.top - offset.top};
+        if (touch.y < 0) {
+          touch.y += event.gesture.touches[0].clientY;
+        }
+        var temp = Math.round((((height - touch.y + offsetY) / height) * (maxTemp - minTemp)) + minTemp);
         if (temp > maxTemp) {
           temp = maxTemp;
         } else if (temp < minTemp) {
@@ -771,12 +810,7 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', []).directive
       $scope.onTouch = function(event) {
         touching = true;
         $ionicScrollDelegate.freezeAllScrolls(true);
-        topPosY = event.currentTarget.offsetTop;
-        var posY = event.gesture.srcEvent.layerY - topPosY;
-        if (posY < 0) {
-          posY += event.gesture.touches[0].clientY;
-        }
-        $scope.setTemp = positionYToTemperature(posY);
+        $scope.setTemp = positionYToTemperature(event);
       };
       $scope.onRelease = function() {
         touching = false;
@@ -784,11 +818,7 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', []).directive
       };
       $scope.drag = function(event) {
         if (touching) {
-          var posY = event.gesture.srcEvent.layerY - topPosY;
-          if (posY < 0) {
-            posY += event.gesture.touches[0].clientY;
-          }
-          $scope.setTemp = positionYToTemperature(posY);
+          $scope.setTemp = positionYToTemperature(event);
         }
       };
       var drawYPosition = function() {
@@ -812,7 +842,11 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', []).directive
 angular.module('angularTouchWidgets.directives.timerEditor', []).directive('timerEditor', function() {
   return {
     restrict: "E",
-    scope: {time: '='},
+    scope: {
+      time: '=',
+      scrollHandler: '@',
+      offset: '='
+    },
     template: '<div style="margin: auto; height: 250px; width: 350px;" on-drag-start="onDrag($event)" on-touch="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)">\
                     <svg id="clock-editor" height="250" width="350">\
                         <defs>\
@@ -881,17 +915,34 @@ angular.module('angularTouchWidgets.directives.timerEditor', []).directive('time
         $scope.semiCircle = regularSemiCircle(175, 125, 100, -90, angle, false);
       };
       var calculeTime = function(event) {
+        var scroll = {
+          top: 0,
+          left: 0
+        };
+        if ($scope.scrollHandler) {
+          scroll = $ionicScrollDelegate.$getByHandle($scope.scrollHandler).getScrollPosition();
+        }
         var touch = {
-          x: event.gesture.srcEvent.layerX,
-          y: event.gesture.srcEvent.layerY
+          x: event.gesture.srcEvent.layerX + scroll.left,
+          y: event.gesture.srcEvent.layerY + scroll.top
         };
         if (touch.y < 0) {
           touch.x += event.gesture.touches[0].clientX;
           touch.y += event.gesture.touches[0].clientY;
         }
+        var offset = {
+          top: 0,
+          left: 0
+        };
+        if ($scope.offset) {
+          offset = {
+            top: event.currentTarget.offsetTop,
+            left: event.currentTarget.offsetLeft
+          };
+        }
         var centerPos = {
-          x: event.currentTarget.offsetLeft + 175,
-          y: event.currentTarget.offsetTop + 125
+          x: 175 + offset.left,
+          y: 125 + offset.top
         };
         var angle = getAngle(centerPos.x, centerPos.y, touch.x, touch.y);
         $scope.time = parseInt((angle + 20) / 30) * 5;
@@ -930,11 +981,11 @@ angular.module('angularTouchWidgets.directives.timerViewer', []).directive('time
     restrict: "E",
     scope: {
       time: '=',
-      onClick: '&'
+      onTab: '&'
     },
     replace: true,
     template: '<div>\
-                    <svg class="clock-viewer" height="200" width="240" ng-click="onClick()">\
+                    <svg class="clock-viewer" height="200" width="240" on-tap="onClick()">\
                         <defs>\
                             <filter id="shadow-{{$id}}" x="-200%" y="-200%" width="450%" height="450%">\
                                 <feOffset result="offOut" in="SourceGraphic" dx="0" dy="2"></feOffset>\
