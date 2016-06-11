@@ -43,6 +43,10 @@
  * show. Also contained is transition data, such as the transition type and
  * direction that will be or was used.
  *
+ * Life cycle events are emitted upwards from the transitioning view's scope. In some cases, it is
+ * desirable for a child/nested view to be notified of the event.
+ * For this use case, `$ionicParentView` life cycle events are broadcast downwards.
+ *
  * <table class="table">
  *  <tr>
  *   <td><code>$ionicView.loaded</code></td>
@@ -83,7 +87,55 @@
  *   <td>The view's controller has been destroyed and its element has been
  * removed from the DOM.</td>
  *  </tr>
+ *  <tr>
+ *   <td><code>$ionicParentView.enter</code></td>
+ *   <td>The parent view has fully entered and is now the active view.
+ * This event will fire, whether it was the first load or a cached view.</td>
+ *  </tr>
+ *  <tr>
+ *   <td><code>$ionicParentView.leave</code></td>
+ *   <td>The parent view has finished leaving and is no longer the
+ * active view. This event will fire, whether it is cached or destroyed.</td>
+ *  </tr>
+ *  <tr>
+ *   <td><code>$ionicParentView.beforeEnter</code></td>
+ *   <td>The parent view is about to enter and become the active view.</td>
+ *  </tr>
+ *  <tr>
+ *   <td><code>$ionicParentView.beforeLeave</code></td>
+ *   <td>The parent view is about to leave and no longer be the active view.</td>
+ *  </tr>
+ *  <tr>
+ *   <td><code>$ionicParentView.afterEnter</code></td>
+ *   <td>The parent view has fully entered and is now the active view.</td>
+ *  </tr>
+ *  <tr>
+ *   <td><code>$ionicParentView.afterLeave</code></td>
+ *   <td>The parent view has finished leaving and is no longer the active view.</td>
+ *  </tr>
  * </table>
+ *
+ * ## LifeCycle Event Usage
+ *
+ * Below is an example of how to listen to life cycle events and
+ * access state parameter data
+ *
+ * ```js
+ * $scope.$on("$ionicView.beforeEnter", function(event, data){
+ *    // handle event
+ *    console.log("State Params: ", data.stateParams);
+ * });
+ *
+ * $scope.$on("$ionicView.enter", function(event, data){
+ *    // handle event
+ *    console.log("State Params: ", data.stateParams);
+ * });
+ *
+ * $scope.$on("$ionicView.afterEnter", function(event, data){
+ *    // handle event
+ *    console.log("State Params: ", data.stateParams);
+ * });
+ * ```
  *
  * ## Caching
  *

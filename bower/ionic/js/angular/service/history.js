@@ -277,6 +277,16 @@ function($rootScope, $state, $location, $window, $timeout, $ionicViewSwitcher, $
         // it's back view would be better represented using the current view as its back view
         tmp = getViewById(switchToView.backViewId);
         if (tmp && switchToView.historyId !== tmp.historyId) {
+          // the new view is being removed from it's old position in the history and being placed at the top,
+          // so we need to update any views that reference it as a backview, otherwise there will be infinitely loops
+          var viewIds = Object.keys(viewHistory.views);
+          viewIds.forEach(function(viewId) {
+            var view = viewHistory.views[viewId];
+            if ( view.backViewId === switchToView.viewId ) {
+              view.backViewId = null;
+            }
+          });
+
           hist.stack[hist.cursor].backViewId = currentView.viewId;
         }
 
@@ -285,7 +295,6 @@ function($rootScope, $state, $location, $window, $timeout, $ionicViewSwitcher, $
         // create an element from the viewLocals template
         ele = $ionicViewSwitcher.createViewEle(viewLocals);
         if (this.isAbstractEle(ele, viewLocals)) {
-          console.log('VIEW', 'abstractView', DIRECTION_NONE, viewHistory.currentView);
           return {
             action: 'abstractView',
             direction: DIRECTION_NONE,
@@ -325,6 +334,7 @@ function($rootScope, $state, $location, $window, $timeout, $ionicViewSwitcher, $
             direction = DIRECTION_FORWARD;
 
           } else if (currentView.historyId !== hist.historyId) {
+            // DB: this is a new view in a different tab
             direction = DIRECTION_ENTER;
 
             tmp = getHistoryById(currentView.historyId);
@@ -405,8 +415,6 @@ function($rootScope, $state, $location, $window, $timeout, $ionicViewSwitcher, $
           }
         }
       }
-
-      console.log('VIEW', action, direction, viewHistory.currentView);
 
       hist.cursor = viewHistory.currentView.index;
 
@@ -593,13 +601,44 @@ function($rootScope, $state, $location, $window, $timeout, $ionicViewSwitcher, $
         if (clearStateIds.length) {
           $timeout(function() {
             self.clearCache(clearStateIds);
-          }, 600);
+          }, 300);
         }
       }
 
       viewHistory.backView && viewHistory.backView.go();
     },
 
+    /**
+     * @ngdoc method
+     * @name $ionicHistory#removeBackView
+     * @description Remove the previous view from the history completely, including the
+     * cached element and scope (if they exist).
+     */
+    removeBackView: function() {
+      var self = this;
+      var currentHistory = viewHistory.histories[this.currentHistoryId()];
+      var currentCursor = currentHistory.cursor;
+
+      var currentView = currentHistory.stack[currentCursor];
+      var backView = currentHistory.stack[currentCursor - 1];
+      var replacementView = currentHistory.stack[currentCursor - 2];
+
+      // fail if we dont have enough views in the history
+      if (!backView || !replacementView) {
+        return;
+      }
+
+      // remove the old backView and the cached element/scope
+      currentHistory.stack.splice(currentCursor - 1, 1);
+      self.clearCache([backView.viewId]);
+      // make the replacementView and currentView point to each other (bypass the old backView)
+      currentView.backViewId = replacementView.viewId;
+      currentView.index = currentView.index - 1;
+      replacementView.forwardViewId = currentView.viewId;
+      // update the cursor and set new backView
+      viewHistory.backView = replacementView;
+      currentHistory.currentCursor += -1;
+    },
 
     enabledBack: function(view) {
       var backView = getBackView(view);
@@ -764,6 +803,10 @@ function($rootScope, $state, $location, $window, $timeout, $ionicViewSwitcher, $
       return false;
     }
     if (ele && ele.attr('can-swipe-back') === 'false') {
+      return false;
+    }
+    var eleChild = ele.find('ion-view');
+    if (eleChild && eleChild.attr('can-swipe-back') === 'false') {
       return false;
     }
     return true;

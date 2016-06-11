@@ -5,11 +5,10 @@ IonicModule
     replace: true,
     require: ['^ionTabs', '^ionTab'],
     template:
-    '<a ng-class="{\'tab-item-active\': isTabActive(), \'has-badge\':badge, \'tab-hidden\':isHidden()}" ' +
+    '<a ng-class="{\'has-badge\':badge, \'tab-hidden\':isHidden(), \'tab-item-active\': isTabActive()}" ' +
       ' ng-disabled="disabled()" class="tab-item">' +
       '<span class="badge {{badgeStyle}}" ng-if="badge">{{badge}}</span>' +
-      '<i class="icon {{getIconOn()}}" ng-if="getIconOn() && isTabActive()"></i>' +
-      '<i class="icon {{getIconOff()}}" ng-if="getIconOff() && !isTabActive()"></i>' +
+      '<i class="icon {{getIcon()}}" ng-if="getIcon()"></i>' +
       '<span class="tab-title" ng-bind-html="title"></span>' +
     '</a>',
     scope: {
@@ -56,6 +55,17 @@ IonicModule
 
       $scope.isTabActive = function() {
         return tabsCtrl.selectedTab() === tabCtrl.$scope;
+      };
+
+      $scope.getIcon = function() {
+        if ( tabsCtrl.selectedTab() === tabCtrl.$scope ) {
+          // active
+          return $scope.iconOn || $scope.icon;
+        }
+        else {
+          // inactive
+          return $scope.iconOff || $scope.icon;
+        }
       };
     }
   };

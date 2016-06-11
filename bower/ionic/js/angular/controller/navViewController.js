@@ -11,7 +11,8 @@ IonicModule
   '$ionicViewSwitcher',
   '$ionicConfig',
   '$ionicScrollDelegate',
-function($scope, $element, $attrs, $compile, $controller, $ionicNavBarDelegate, $ionicNavViewDelegate, $ionicHistory, $ionicViewSwitcher, $ionicConfig, $ionicScrollDelegate) {
+  '$ionicSideMenuDelegate',
+function($scope, $element, $attrs, $compile, $controller, $ionicNavBarDelegate, $ionicNavViewDelegate, $ionicHistory, $ionicViewSwitcher, $ionicConfig, $ionicScrollDelegate, $ionicSideMenuDelegate) {
 
   var DATA_ELE_IDENTIFIER = '$eleId';
   var DATA_DESTROY_ELE = '$destroyEle';
@@ -62,8 +63,8 @@ function($scope, $element, $attrs, $compile, $controller, $ionicNavBarDelegate, 
     $scope.$on('$ionicTabs.leave', onTabsLeave);
 
     ionic.Platform.ready(function() {
-      if (ionic.Platform.isWebView() && $ionicConfig.views.swipeBackEnabled()) {
-        self.initSwipeBack();
+      if ( ionic.Platform.isWebView() && ionic.Platform.isIOS() ) {
+          self.initSwipeBack();
       }
     });
 
@@ -205,6 +206,7 @@ function($scope, $element, $attrs, $compile, $controller, $ionicNavBarDelegate, 
       if (navViewAttr(viewElement) == VIEW_STATUS_ACTIVE) {
         viewScope = viewElement.scope();
         viewScope && viewScope.$emit(ev.name.replace('Tabs', 'View'), data);
+        viewScope && viewScope.$broadcast(ev.name.replace('Tabs', 'ParentView'), data);
         break;
       }
     }
@@ -267,6 +269,9 @@ function($scope, $element, $attrs, $compile, $controller, $ionicNavBarDelegate, 
     if (viewLocals && viewLocals.$$controller) {
       viewLocals.$scope = viewScope;
       var controller = $controller(viewLocals.$$controller, viewLocals);
+      if (viewLocals.$$controllerAs) {
+        viewScope[viewLocals.$$controllerAs] = controller;
+      }
       $element.children().data('$ngControllerController', controller);
     }
 
@@ -350,7 +355,8 @@ function($scope, $element, $attrs, $compile, $controller, $ionicNavBarDelegate, 
     var cancelData = {};
 
     function onDragStart(ev) {
-      if (!isPrimary) return;
+      if (!isPrimary || !$ionicConfig.views.swipeBackEnabled() || $ionicSideMenuDelegate.isOpenRight() ) return;
+
 
       startDragX = getDragX(ev);
       if (startDragX > swipeBackHitWidth) return;

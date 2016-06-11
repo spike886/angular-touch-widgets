@@ -117,6 +117,7 @@ IonicModule
    * @returns {object} The scroll position of this view, with the following properties:
    *  - `{number}` `left` The distance the user has scrolled from the left (starts at 0).
    *  - `{number}` `top` The distance the user has scrolled from the top (starts at 0).
+   *  - `{number}` `zoom` The current zoom level.
    */
   'getScrollPosition',
   /**
@@ -135,7 +136,7 @@ IonicModule
    * @name $ionicScrollDelegate#freezeScroll
    * @description Does not allow this scroll view to scroll either x or y.
    * @param {boolean=} shouldFreeze Should this scroll view be prevented from scrolling or not.
-   * @returns {object} If the scroll view is being prevented from scrolling or not.
+   * @returns {boolean} If the scroll view is being prevented from scrolling or not.
    */
   'freezeScroll',
   /**

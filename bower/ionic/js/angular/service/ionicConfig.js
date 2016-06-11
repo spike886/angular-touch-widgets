@@ -88,12 +88,22 @@
  * @returns {boolean}
  */
 
+ /**
+  * @ngdoc method
+  * @name $ionicConfigProvider#views.swipeBackEnabled
+  * @description  By default on iOS devices, swipe to go back functionality is enabled by default.
+  * This method can be used to disable it globally, or on a per-view basis.
+  * Note: This functionality is only supported on iOS.
+  * @param {boolean} value
+  * @returns {boolean}
+  */
+
 /**
  * @ngdoc method
  * @name $ionicConfigProvider#scrolling.jsScrolling
- * @description  Whether to use JS or Native scrolling. Defaults to JS scrolling. Setting this to
- * `false` has the same effect as setting each `ion-content` to have `overflow-scroll='true'`.
- * @param {boolean} value Defaults to `true`
+ * @description  Whether to use JS or Native scrolling. Defaults to native scrolling. Setting this to
+ * `true` has the same effect as setting each `ion-content` to have `overflow-scroll='false'`.
+ * @param {boolean} value Defaults to `false` as of Ionic 1.2
  * @returns {boolean}
  */
 
@@ -368,8 +378,11 @@ IonicModule
     tabs: {
       style: 'striped',
       position: 'top'
-    }
+    },
 
+    scrolling: {
+      jsScrolling: false
+    }
   });
 
   // Windows Phone
@@ -484,27 +497,28 @@ IonicModule
   provider.transitions.views.android = function(enteringEle, leavingEle, direction, shouldAnimate) {
     shouldAnimate = shouldAnimate && (direction == 'forward' || direction == 'back');
 
-    function setStyles(ele, x) {
+    function setStyles(ele, x, opacity) {
       var css = {};
       css[ionic.CSS.TRANSITION_DURATION] = d.shouldAnimate ? '' : 0;
       css[ionic.CSS.TRANSFORM] = 'translate3d(' + x + '%,0,0)';
+      css.opacity = opacity;
       ionic.DomUtil.cachedStyles(ele, css);
     }
 
     var d = {
       run: function(step) {
         if (direction == 'forward') {
-          setStyles(enteringEle, (1 - step) * 99); // starting at 98% prevents a flicker
-          setStyles(leavingEle, step * -100);
+          setStyles(enteringEle, (1 - step) * 99, 1); // starting at 98% prevents a flicker
+          setStyles(leavingEle, step * -100, 1);
 
         } else if (direction == 'back') {
-          setStyles(enteringEle, (1 - step) * -100);
-          setStyles(leavingEle, step * 100);
+          setStyles(enteringEle, (1 - step) * -100, 1);
+          setStyles(leavingEle, step * 100, 1);
 
         } else {
           // swap, enter, exit
-          setStyles(enteringEle, 0);
-          setStyles(leavingEle, 0);
+          setStyles(enteringEle, 0, 1);
+          setStyles(leavingEle, 0, 0);
         }
       },
       shouldAnimate: shouldAnimate
@@ -651,6 +665,6 @@ IonicModule
 // http://blogs.msdn.com/b/msdn_answers/archive/2015/02/10/
 // running-cordova-apps-on-windows-and-windows-phone-8-1-using-ionic-angularjs-and-other-frameworks.aspx
 .config(['$compileProvider', function($compileProvider) {
-  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|tel|ftp|mailto|file|ghttps?|ms-appx|x-wmapp0):/);
-  $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|file|content|blob|ms-appx|x-wmapp0):|data:image\//);
+  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|sms|tel|geo|ftp|mailto|file|ghttps?|ms-appx-web|ms-appx|x-wmapp0):/);
+  $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|file|content|blob|ms-appx|ms-appx-web|x-wmapp0):|data:image\//);
 }]);
