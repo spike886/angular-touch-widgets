@@ -13,7 +13,7 @@
     <clock-viewer from="from" to="to" on-tab="alert('click')"></clock-viewer>
 </div>
 <div ng-init="time= '30';">
-    <timer-editor time="time"></timer-editor>
+    <timer-editor time="time" can-be-zero="false"></timer-editor>
     <timer-viewer time="time" on-tab="alert('click')"></timer-viewer>
 </div>
 <div ng-init="actualTemp= 10; setTemp= 25;">

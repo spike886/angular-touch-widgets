@@ -803,7 +803,10 @@ angular.module('angularTouchWidgets.directives.thermometerEditor', []).directive
 angular.module('angularTouchWidgets.directives.timerEditor', []).directive('timerEditor', function() {
   return {
     restrict: "E",
-    scope: {time: '='},
+    scope: {
+      time: '=',
+      canBeZero: '='
+    },
     template: '<div style="margin: auto; height: 250px; width: 350px;" on-drag-start="onDrag($event)" on-touch="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)">\
                     <svg id="clock-editor" height="250" width="350">\
                         <defs>\
@@ -866,6 +869,9 @@ angular.module('angularTouchWidgets.directives.timerEditor', []).directive('time
                     </svg>\
                 </div>',
     controller: function($scope, $ionicScrollDelegate) {
+      if ($scope.canBeZero === undefined) {
+        $scope.canBeZero = true;
+      }
       var touching = false;
       var drawRange = function() {
         var angle = -90 + ($scope.time * 6);
@@ -883,6 +889,9 @@ angular.module('angularTouchWidgets.directives.timerEditor', []).directive('time
         };
         var angle = getAngle(centerPos.x, centerPos.y, touch.x, touch.y);
         $scope.time = parseInt((angle + 20) / 30) * 5;
+        if (!$scope.canBeZero && $scope.time == 0) {
+          $scope.time = 5;
+        }
       };
       $scope.onClick = function(event) {
         calculeTime(event);
