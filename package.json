@@ -6,6 +6,9 @@
     "name": "Andres Garcia Scardilli",
     "email": "spike886@gmail.com"
   },
+   "contributors": [
+    "Mohamed Habashy  (https://github.com/Mohamed-Habshey)"
+  ],
   "dependencies": {},
   "devDependencies": {
     "chai": "^1.9.1",
