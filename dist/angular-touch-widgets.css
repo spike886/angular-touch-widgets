@@ -3080,15 +3080,12 @@ svg .secondary-content-selection {
 
 .center {
   display: -webkit-box;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: center;
-  -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
   -webkit-box-pack: center;
-  -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center; }
 
@@ -3099,8 +3096,7 @@ svg .secondary-content-selection {
   will-change: transform;
   border-width: 2px;
   border-style: solid;
-  -ms-transform: scale(2);
-      transform: scale(2);
+  transform: scale(2);
   -webkit-transform: scale(2);
   box-shadow: 1px 4px 7px 1px rgba(0, 0, 0, 0.76) !important; }
 
