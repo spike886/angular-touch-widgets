@@ -32,10 +32,10 @@ Usage
 
 This widget let the user select time interval
 
-**from**: Variable to store start time
-**to**: Variable to store end time
+- **from**: Variable to store start time
+- **to**: Variable to store end time
 
-```javascrip
+```javascript
 var from = '01:00';
 var to = '03:30';
 ```
@@ -47,11 +47,11 @@ var to = '03:30';
 
 This widget let the user view time interval selected (usually used opening a modal with a editor on tab)
 
-**from**: Variable storing start time
-**to**: Variable storing end time
-**on-tab**: Code to be executed on tab
+- **from**: Variable storing start time
+- **to**: Variable storing end time
+- **on-tab**: Code to be executed on tab
 
-```javascrip
+```javascript
 var from = '01:00';
 var to = '03:30';
 var alert = function(){alert('click');};
@@ -67,10 +67,10 @@ var alert = function(){alert('click');};
 
 This widget let the user select the amount of minutes
 
-**time**: Variable to store the amount of minutes
-**can-be-zero**: Boolean value indicating if the user could select zero (default: true)
+- **time**: Variable to store the amount of minutes
+- **can-be-zero**: Boolean value indicating if the user could select zero (default: true)
 
-```javascrip
+```javascript
 var time = '30';
 ```
 ```html
@@ -81,10 +81,10 @@ var time = '30';
 
 This widget let the user view the selected amount of minutes (usually used opening a modal with a editor on tab)
 
-**time**: Variable storing the amount of minutes
-**on-tab**: Code to be executed on tab
+- **time**: Variable storing the amount of minutes
+- **on-tab**: Code to be executed on tab
 
-```javascrip
+```javascript
 var time = '30';
 var alert = function(){alert('click');};
 ```
@@ -99,13 +99,13 @@ var alert = function(){alert('click');};
 
 This widget let the user select temperature
 
-**set-temp**: Variable to store the set temperature
-**actual-temp**: Variable storing the actual temperature
-**min-temp**: Integer used as minimum temperature (default: -20)
-**max-temp**: Integer used as maximum temperature (default: 50)
-**show-actual**: Boolean value that indicates if it should show temperature number of the actual-temp (default: false)
+- **set-temp**: Variable to store the set temperature
+- **actual-temp**: Variable storing the actual temperature
+- **min-temp**: Integer used as minimum temperature (default: -20)
+- **max-temp**: Integer used as maximum temperature (default: 50)
+- **show-actual**: Boolean value that indicates if it should show temperature number of the actual-temp (default: false)
 
-```javascrip
+```javascript
 var actualTemp= 10;
 var setTemp= 25;
 ```
@@ -120,9 +120,9 @@ var setTemp= 25;
 
 This widget let the user view the level of ORP on the water
 
-**orp**: Variable storing the orp value
+- **orp**: Variable storing the orp value
 
-```javascrip
+```javascript
 var orp= 1;
 ```
 ```html
@@ -133,9 +133,9 @@ var orp= 1;
 
 This widget let the user view the level of PH on the water
 
-**ph**: Variable storing the ph value
+- **ph**: Variable storing the ph value
 
-```javascrip
+```javascript
 var ph=7;
 ```
 ```html
@@ -149,9 +149,9 @@ var ph=7;
 
 This widget let the user select the intensity of a light (this widget is usually used with light-color-editor to edit color and intensity)
 
-**intensity**: Variable to store the intensity of the light
+- **intensity**: Variable to store the intensity of the light
 
-```javascrip
+```javascript
 var light= {color: {r: 100, g: 0, b: 255}, intensity: 100};
 ```
 ```html
@@ -162,12 +162,12 @@ var light= {color: {r: 100, g: 0, b: 255}, intensity: 100};
 
 This widget let the user select the color of a light (this widget is usually used with light-intensity-editor to edit color and intensity)
 
-**color**: Variable to store the color of the light
-**img**: url used as color selector (default: img/light-color-editor.png)
+- **color**: Variable to store the color of the light
+- **img**: url used as color selector (default: img/light-color-editor.png)
 
 You should include `light-color-editor.png` on you project to use this widget
 
-```javascrip
+```javascript
 var light= {color: {r: 100, g: 0, b: 255}, intensity: 100};
 ```
 ```html
@@ -178,13 +178,13 @@ var light= {color: {r: 100, g: 0, b: 255}, intensity: 100};
 
 This widget let the user view the selected color and intensity and also allow the user to switch off and on the light (usually used opening a modal with a color and intensity editor on tab)
 
-**light**: Variable storing light object to be shown
-**on**: Variable to store the on value of the light
-**can-turn-off**: boolean value setting if it should allow to switch on and off the light (default: true)
-**is-rgb**: boolean value setting if it should color value of the light (default: true)
-**on-tab**: Code to be executed on tab over the widget (not the on/off button)
+- **light**: Variable storing light object to be shown
+- **on**: Variable to store the on value of the light
+- **can-turn-off**: boolean value setting if it should allow to switch on and off the light (default: true)
+- **is-rgb**: boolean value setting if it should color value of the light (default: true)
+- **on-tab**: Code to be executed on tab over the widget (not the on/off button)
 
-```javascrip
+```javascript
 var light= {color: {r: 100, g: 0, b: 255}, intensity: 100};
 var alert = function(){alert('click');};
 ```
@@ -199,9 +199,9 @@ var alert = function(){alert('click');};
 
 This widget let the user set on/off state of objects
 
-**on**: Variable to store ON value
+- **on**: Variable to store ON value
 
-```javascrip
+```javascript
 var onOff= false
 ```
 ```html
@@ -215,9 +215,10 @@ var onOff= false
 
 This widget let the user change between active modes
 
-**on**: Variable to store ON value
+- **modes**: Variable storing the list of available modes
+- **selected-mode**: Variable to store the name of the selected mode
 
-```javascrip
+```javascript
 var modes= [
             {
                 display: 'Pinterest',
