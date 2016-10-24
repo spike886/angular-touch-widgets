@@ -3,7 +3,7 @@ angular.module('angularTouchWidgets.directives.timerEditor', [])
     .directive('timerEditor', function () {
         return {
             restrict: "E",
-            scope: { time: '=', canBeZero: '=' },
+            scope: { time: '=', canBeZero: '=?' },
             template:'<div style="margin: auto; height: 250px; width: 350px;" on-drag-start="onDrag($event)" on-touch="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)">\
                     <svg id="clock-editor" height="250" width="350">\
                         <defs>\

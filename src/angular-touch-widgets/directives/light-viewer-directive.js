@@ -4,7 +4,7 @@ angular.module('angularTouchWidgets.directives.lightViewer', [])
         return {
             restrict: "E",
             replace: true,
-            scope: { on: '=', mode: '=', canTurnOff: '=', isRgb: '=', onTab: '&', modeStatic: '=', modeAnimated: '=' },
+            scope: { on: '=?', mode: '=?', canTurnOff: '=?', isRgb: '=?', onTab: '&', light: '=?', modeStatic: '=?', modeAnimated: '=?' },
             template:'  <div class="light-viewer" style="position: relative; height: 260px; width: 240px;">\
                             <svg class="fx-zoom-normal" height="260" width="240" style="position: absolute;" ng-show="(on || !canTurnOff)">\
                                 <defs>\
@@ -52,6 +52,9 @@ angular.module('angularTouchWidgets.directives.lightViewer', [])
                             </div>\
                         </div>',
             controller: function($scope){
+                if($scope.light){
+                    $scope.modeStatic=$scope.light;
+                }
                 if($scope.on===undefined){
                     $scope.on=true;
                 }

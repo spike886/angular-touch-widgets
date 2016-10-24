@@ -275,48 +275,7 @@ function parseTime(time) {
 }
 
 "use strict";
-angular.module('angularTouchWidgets.directives.colorWheel', []).directive('colorWheel', function($animate) {
-  return {
-    restrict: "E",
-    replace: true,
-    scope: {
-      color: '=',
-      img: '@'
-    },
-    template: '<div style="height: 300px; width: 300px; margin: auto; position: relative;">\
-                    <canvas var="1" width="300" height="300" ng-click="colorClick($event)"></canvas>\
-                    <div ng-style="{\'background-color\': \'rgb(\'+color.r+\',\'+color.g+\',\'+color.b+\')\'}" style="position: absolute; top: 120px; left: 120px; height: 60px; width: 60px; border-radius: 50%; box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.46); transition: background 0.1s; -webkit-transition: background 0.1s"></div>\
-                </div>',
-    link: function(scope, element) {
-      var ctx = element.children()[0].getContext('2d');
-      var selection = angular.element(element.children()[1]);
-      var image = new Image();
-      image.onload = function() {
-        ctx.drawImage(image, 0, 0, 300, 300);
-      };
-      image.src = scope.img || 'img/color-wheel.png';
-      var animateClick = function() {
-        $animate.addClass(selection, 'pulse animated-quick').then(function() {
-          selection.removeClass('pulse animated-quick');
-        });
-      };
-      scope.colorClick = function(e) {
-        var pixel = ctx.getImageData(e.offsetX, e.offsetY, 1, 1).data;
-        if (pixel[3] !== 0) {
-          angular.copy({
-            r: pixel[0],
-            g: pixel[1],
-            b: pixel[2]
-          }, scope.color);
-          animateClick();
-        }
-      };
-    }
-  };
-});
-
-"use strict";
-angular.module('angularTouchWidgets.directives', ['angularTouchWidgets.directives.modeSelector', 'angularTouchWidgets.directives.colorWheel', 'angularTouchWidgets.directives.lightViewer', 'angularTouchWidgets.directives.lightColorEditor', 'angularTouchWidgets.directives.lightIntensityEditor', 'angularTouchWidgets.directives.clockViewer', 'angularTouchWidgets.directives.timerViewer', 'angularTouchWidgets.directives.clockEditor', 'angularTouchWidgets.directives.timerEditor', 'angularTouchWidgets.directives.thermometerEditor', 'angularTouchWidgets.directives.phViewer', 'angularTouchWidgets.directives.orpViewer', 'angularTouchWidgets.directives.onOffButton']);
+angular.module('angularTouchWidgets.directives', ['angularTouchWidgets.directives.modeSelector', 'angularTouchWidgets.directives.lightViewer', 'angularTouchWidgets.directives.lightColorEditor', 'angularTouchWidgets.directives.lightIntensityEditor', 'angularTouchWidgets.directives.clockViewer', 'angularTouchWidgets.directives.timerViewer', 'angularTouchWidgets.directives.clockEditor', 'angularTouchWidgets.directives.timerEditor', 'angularTouchWidgets.directives.thermometerEditor', 'angularTouchWidgets.directives.phViewer', 'angularTouchWidgets.directives.orpViewer', 'angularTouchWidgets.directives.onOffButton']);
 function regularArcData(cx, cy, radius, startDegrees, endDegrees, isCounterClockwise) {
   var offsetRadians = 0;
   var sweepFlag = (isCounterClockwise) ? 0 : 1;
@@ -435,13 +394,14 @@ angular.module('angularTouchWidgets.directives.lightViewer', []).directive('ligh
     restrict: "E",
     replace: true,
     scope: {
-      on: '=',
-      mode: '=',
-      canTurnOff: '=',
-      isRgb: '=',
+      on: '=?',
+      mode: '=?',
+      canTurnOff: '=?',
+      isRgb: '=?',
       onTab: '&',
-      modeStatic: '=',
-      modeAnimated: '='
+      light: '=?',
+      modeStatic: '=?',
+      modeAnimated: '=?'
     },
     template: '  <div class="light-viewer" style="position: relative; height: 260px; width: 240px;">\
                             <svg class="fx-zoom-normal" height="260" width="240" style="position: absolute;" ng-show="(on || !canTurnOff)">\
@@ -490,6 +450,9 @@ angular.module('angularTouchWidgets.directives.lightViewer', []).directive('ligh
                             </div>\
                         </div>',
     controller: function($scope) {
+      if ($scope.light) {
+        $scope.modeStatic = $scope.light;
+      }
       if ($scope.on === undefined) {
         $scope.on = true;
       }
@@ -554,7 +517,7 @@ angular.module('angularTouchWidgets.directives.modeSelector', []).directive('mod
                                 <span style="margin-right: 20px">\
                                     {{ mode.display }}\
                                 </span>\
-                                <i class="icon {{ mode.name }}-app-icon" style="margin-right: -15px; font-size: 30px; vertical-align: middle;"></i>\
+                                <i class="{{ mode.icon }}" style="margin-right: -15px; font-size: 30px; vertical-align: middle;"></i>\
                             </div>\
                         </div>\
                     </div>\
@@ -587,9 +550,9 @@ angular.module('angularTouchWidgets.directives.onOffButton', []).directive('onOf
   return {
     restrict: "E",
     replace: true,
-    scope: {value: '='},
+    scope: {on: '='},
     template: '  <div>\
-                            <div class="on-off-button">\
+                            <div class="on-off-button" style="position: relative;">\
                                 <svg height="260" width="230">\
                                     <defs>\
                                         <filter id="button-shadow-{{$id}}" x="-200%" y="-200%" width="450%" height="450%">\
@@ -600,18 +563,18 @@ angular.module('angularTouchWidgets.directives.onOffButton', []).directive('onOf
                                         </filter>\
                                     </defs>\
                                     <g on-tap="toggle()">\
-                                        <path class="show-hide-opacity button-on-svg" ng-hide="value" fill="transparent" stroke-width="40" d="M 166 204 A 103 103 0 0 1 63 204" filter="url(#button-shadow-{{$id}})"></path>\
-                                        <path class="show-hide-opacity button-off-svg" ng-show="value" fill="transparent" stroke-width="40" d="M 166 204 A 103 103 0 0 1 63 204" filter="url(#button-shadow-{{$id}})"></path>\
+                                        <path class="show-hide-opacity button-on-svg" ng-hide="on" fill="transparent" stroke-width="40" d="M 166 204 A 103 103 0 0 1 63 204" filter="url(#button-shadow-{{$id}})"></path>\
+                                        <path class="show-hide-opacity button-off-svg" ng-show="on" fill="transparent" stroke-width="40" d="M 166 204 A 103 103 0 0 1 63 204" filter="url(#button-shadow-{{$id}})"></path>\
                                     </g>\
                                 </svg>\
                                 <div class="center" style="position: absolute; top: 197px; left: 65px; height: 40px; width: 100px;" on-tap="toggle()">\
                                     <i class="icon ion-power" style="color: white; font-size: 26px;"></i>\
                                 </div>\
                                 <div style="position: absolute; top: 41px; left: 39px;">\
-                                    <div class="fx-rotate-clock round-button center override button-off button-shadow" ng-hide="value" on-tap="toggle()">\
+                                    <div class="fx-rotate-clock round-button center override button-off button-shadow" ng-hide="on" on-tap="toggle()">\
                                         <span style="font-size: 34px; color: white;">Apagado</span>\
                                     </div>\
-                                    <div class="fx-rotate-clock round-button center override button-on button-shadow" ng-show="value" on-tap="toggle()">\
+                                    <div class="fx-rotate-clock round-button center override button-on button-shadow" ng-show="on" on-tap="toggle()">\
                                         <span style="font-size: 30px;">Encendido</span>\
                                     </div>\
                                 </div>\
@@ -619,7 +582,7 @@ angular.module('angularTouchWidgets.directives.onOffButton', []).directive('onOf
                         </div>',
     controller: function($scope) {
       $scope.toggle = function() {
-        $scope.value = !$scope.value;
+        $scope.on = !$scope.on;
       };
     }
   };
@@ -846,7 +809,7 @@ angular.module('angularTouchWidgets.directives.timerEditor', []).directive('time
     restrict: "E",
     scope: {
       time: '=',
-      canBeZero: '='
+      canBeZero: '=?'
     },
     template: '<div style="margin: auto; height: 250px; width: 350px;" on-drag-start="onDrag($event)" on-touch="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)">\
                     <svg id="clock-editor" height="250" width="350">\

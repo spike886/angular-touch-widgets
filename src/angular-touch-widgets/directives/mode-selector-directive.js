@@ -14,7 +14,7 @@ angular.module('angularTouchWidgets.directives.modeSelector', [])
                                 <span style="margin-right: 20px">\
                                     {{ mode.display }}\
                                 </span>\
-                                <i class="icon {{ mode.name }}-app-icon" style="margin-right: -15px; font-size: 30px; vertical-align: middle;"></i>\
+                                <i class="{{ mode.icon }}" style="margin-right: -15px; font-size: 30px; vertical-align: middle;"></i>\
                             </div>\
                         </div>\
                     </div>\

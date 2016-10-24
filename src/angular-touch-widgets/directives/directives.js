@@ -1,7 +1,6 @@
 angular.module('angularTouchWidgets.directives',
     [
         'angularTouchWidgets.directives.modeSelector',
-		'angularTouchWidgets.directives.colorWheel',
         'angularTouchWidgets.directives.lightViewer',
         'angularTouchWidgets.directives.lightColorEditor',
         'angularTouchWidgets.directives.lightIntensityEditor',
