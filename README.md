@@ -21,7 +21,7 @@ Add the project files on your html
     
 And inject angular-touch-widgets into your app
 
-    var app = angular.module('YOUR_APP_NAME', ['ionic', 'angular-touch-widgets']);
+    var app = angular.module('YOUR_APP_NAME', ['ionic', 'angularTouchWidgets']);
 
 Usage
 -----
