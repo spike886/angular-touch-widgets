@@ -6,265 +6,136 @@
 })(angular);
 
 "use strict";
-angular.module('angularTouchWidgets.directives.clockEditor', []).directive('clockEditor', function() {
-  return {
-    restrict: "E",
-    scope: {
-      from: '=',
-      to: '='
+angular.module('angularTouchWidgets.directives.clockEditor', []).component('clockEditor', {
+  bindings: {
+    from: '<',
+    to: '<',
+    onChange: '&'
+  },
+  template: "\n        <div style=\"margin: auto; height: 250px; width: 350px;\" on-drag-start=\"$ctrl.onTouch($event)\" on-drag-end=\"$ctrl.onRelease()\" on-drag=\"$ctrl.drag($event)\">\n            <svg id=\"clock-editor\" height=\"250\" width=\"350\">\n                <defs>\n                    <filter id=\"shadow-{{$id}}\" x=\"-200%\" y=\"-200%\" width=\"450%\" height=\"450%\">\n                        <feOffset result=\"offOut\" in=\"SourceGraphic\" dx=\"0\" dy=\"2\"></feOffset>\n                        <feColorMatrix result=\"matrixOut\" in=\"offOut\" type=\"matrix\" values=\"0.4 0 0 0 0 0 0.4 0 0 0 0 0 0.4 0 0 0 0 0 1 0\"></feColorMatrix>\n                        <feGaussianBlur result=\"blurOut\" in=\"matrixOut\" stdDeviation=\"2\"></feGaussianBlur>\n                        <feBlend in=\"SourceGraphic\" in2=\"blurOut\" mode=\"normal\"></feBlend>\n                    </filter>\n                </defs>\n                <g>\n                    <circle cx=\"175\" cy=\"125\" r=\"100\" fill=\"white\"></circle>\n                    <path fill=\"#eee\" d=\"M 175 25 A 100 100 0 0 1 225 38L 175 125\"></path>\n                    <path fill=\"#eee\" d=\"M 261 75 A 100 100 0 0 1 275 125L 175 125\"></path>\n                    <path fill=\"#eee\" d=\"M 261 175 A 100 100 0 0 1 225 211L 175 125\"></path>\n                    <path fill=\"#eee\" d=\"M 175 225 A 100 100 0 0 1 125 211L 175 125\"></path>\n                    <path fill=\"#eee\" d=\"M 88 175 A 100 100 0 0 1 75 125L 175 125\"></path>\n                    <path fill=\"#eee\" d=\"M 88 74 A 100 100 0 0 1 124 38L 175 125\"></path>\n                </g>\n                <g>\n                    <circle cx=\"175\" cy=\"125\" r=\"70\" fill=\"white\"></circle>\n                    <path fill=\"#eee\" d=\"M 210 64 A 70 70 0 0 1 235 90L 175 125\"></path>\n                    <path fill=\"#eee\" d=\"M 245 125 A 70 70 0 0 1 235 160L 175 125\"></path>\n                    <path fill=\"#eee\" d=\"M 210 185 A 70 70 0 0 1 175 195L 175 125\"></path>\n                    <path fill=\"#eee\" d=\"M 140 185 A 70 70 0 0 1 114 160L 175 125\"></path>\n                    <path fill=\"#eee\" d=\"M 105 125 A 70 70 0 0 1 114 90L 175 125\"></path>\n                    <path fill=\"#eee\" d=\"M 139 64 A 70 70 0 0 1 175 55L 175 125\"></path>\n                </g>\n                <path class=\"content-selection\" ng-attr-d=\"{{ $ctrl.semiCircle }}\" filter=\"url(#shadow-{{$id}})\"></path>\n                <circle id=\"test\" cx=\"175\" cy=\"125\" r=\"100\" stroke=\"black\" fill=\"transparent\" stroke-width=\"6\" filter=\"url(#shadow-{{$id}})\"></circle>\n                <g fill=\"#555\">\n                    <text x=\"167\" y=\"47\">\n                        00\n                    </text>\n                    <text x=\"210\" y=\"57\">\n                        13\n                    </text>\n                    <text x=\"242\" y=\"88\">\n                        14\n                    </text>\n                    <text x=\"252\" y=\"129\">\n                        15\n                    </text>\n                    <text x=\"241\" y=\"171\">\n                        16\n                    </text>\n                    <text x=\"210\" y=\"203\">\n                        17\n                    </text>\n                    <text x=\"168\" y=\"215\">\n                        18\n                    </text>\n                    <text x=\"128\" y=\"203\">\n                        19\n                    </text>\n                    <text x=\"96\" y=\"171\">\n                        20\n                    </text>\n                    <text x=\"85\" y=\"129\">\n                        21\n                    </text>\n                    <text x=\"95\" y=\"88\">\n                        22\n                    </text>\n                    <text x=\"125\" y=\"57\">\n                        23\n                    </text>\n                </g>\n                <g fill=\"#555\">\n                    <text x=\"168\" y=\"72\">\n                        12\n                    </text>\n                    <text x=\"199\" y=\"80\">\n                        1\n                    </text>\n                    <text x=\"221\" y=\"100\">\n                        2\n                    </text>\n                    <text x=\"228\" y=\"129\">\n                        3\n                    </text>\n                    <text x=\"221\" y=\"159\">\n                        4\n                    </text>\n                    <text x=\"200\" y=\"181\">\n                        5\n                    </text>\n                    <text x=\"171\" y=\"189\">\n                        6\n                    </text>\n                    <text x=\"142\" y=\"181\">\n                        7\n                    </text>\n                    <text x=\"121\" y=\"158\">\n                        8\n                    </text>\n                    <text x=\"112\" y=\"129\">\n                        9\n                    </text>\n                    <text x=\"119\" y=\"101\">\n                        10\n                    </text>\n                    <text x=\"137\" y=\"81\">\n                        11\n                    </text>\n                </g>\n                <text ng-attr-x=\"{{$ctrl.fromPos.x-20}}\" ng-attr-y=\"{{$ctrl.fromPos.y+9}}\" font-size=\"20\">\n                    {{ $ctrl.from }}\n                </text>\n                <text ng-attr-x=\"{{$ctrl.toPos.x-20}}\" ng-attr-y=\"{{$ctrl.toPos.y+9}}\" font-size=\"20\">\n                    {{ $ctrl.to }}\n                </text>\n            </svg>\n        </div>",
+  controller: ($traceurRuntime.createClass)(function($ionicScrollDelegate) {
+    this.$ionicScrollDelegate = $ionicScrollDelegate;
+  }, {
+    $onChanges: function() {
+      this.drawRange();
     },
-    template: '<div style="margin: auto; height: 250px; width: 350px;" on-drag-start="onTouch($event)" on-drag-end="onRelease()" on-drag="drag($event)">\
-                    <svg id="clock-editor" height="250" width="350">\
-                        <defs>\
-                            <filter id="shadow-{{$id}}" x="-200%" y="-200%" width="450%" height="450%">\
-                                <feOffset result="offOut" in="SourceGraphic" dx="0" dy="2"></feOffset>\
-                                <feColorMatrix result="matrixOut" in="offOut" type="matrix" values="0.4 0 0 0 0 0 0.4 0 0 0 0 0 0.4 0 0 0 0 0 1 0"></feColorMatrix>\
-                                <feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="2"></feGaussianBlur>\
-                                <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend>\
-                            </filter>\
-                        </defs>\
-                        <g>\
-                            <circle cx="175" cy="125" r="100" fill="white"></circle>\
-                            <path fill="#eee" d="M 175 25 A 100 100 0 0 1 225 38L 175 125"></path>\
-                            <path fill="#eee" d="M 261 75 A 100 100 0 0 1 275 125L 175 125"></path>\
-                            <path fill="#eee" d="M 261 175 A 100 100 0 0 1 225 211L 175 125"></path>\
-                            <path fill="#eee" d="M 175 225 A 100 100 0 0 1 125 211L 175 125"></path>\
-                            <path fill="#eee" d="M 88 175 A 100 100 0 0 1 75 125L 175 125"></path>\
-                            <path fill="#eee" d="M 88 74 A 100 100 0 0 1 124 38L 175 125"></path>\
-                        </g>\
-                        <g>\
-                            <circle cx="175" cy="125" r="70" fill="white"></circle>\
-                            <path fill="#eee" d="M 210 64 A 70 70 0 0 1 235 90L 175 125"></path>\
-                            <path fill="#eee" d="M 245 125 A 70 70 0 0 1 235 160L 175 125"></path>\
-                            <path fill="#eee" d="M 210 185 A 70 70 0 0 1 175 195L 175 125"></path>\
-                            <path fill="#eee" d="M 140 185 A 70 70 0 0 1 114 160L 175 125"></path>\
-                            <path fill="#eee" d="M 105 125 A 70 70 0 0 1 114 90L 175 125"></path>\
-                            <path fill="#eee" d="M 139 64 A 70 70 0 0 1 175 55L 175 125"></path>\
-                        </g>\
-                        <path class="content-selection" ng-attr-d="{{ semiCircle }}" filter="url(#shadow-{{$id}})"></path>\
-                        <circle id="test" cx="175" cy="125" r="100" stroke="black" fill="transparent" stroke-width="6" filter="url(#shadow-{{$id}})"></circle>\
-                        <g fill="#555">\
-                            <text x="167" y="47">\
-                                00\
-                            </text>\
-                            <text x="210" y="57">\
-                                13\
-                            </text>\
-                            <text x="242" y="88">\
-                                14\
-                            </text>\
-                            <text x="252" y="129">\
-                                15\
-                            </text>\
-                            <text x="241" y="171">\
-                                16\
-                            </text>\
-                            <text x="210" y="203">\
-                                17\
-                            </text>\
-                            <text x="168" y="215">\
-                                18\
-                            </text>\
-                            <text x="128" y="203">\
-                                19\
-                            </text>\
-                            <text x="96" y="171">\
-                                20\
-                            </text>\
-                            <text x="85" y="129">\
-                                21\
-                            </text>\
-                            <text x="95" y="88">\
-                                22\
-                            </text>\
-                            <text x="125" y="57">\
-                                23\
-                            </text>\
-                        </g>\
-                        <g fill="#555">\
-                            <text x="168" y="72">\
-                                12\
-                            </text>\
-                            <text x="199" y="80">\
-                                1\
-                            </text>\
-                            <text x="221" y="100">\
-                                2\
-                            </text>\
-                            <text x="228" y="129">\
-                                3\
-                            </text>\
-                            <text x="221" y="159">\
-                                4\
-                            </text>\
-                            <text x="200" y="181">\
-                                5\
-                            </text>\
-                            <text x="171" y="189">\
-                                6\
-                            </text>\
-                            <text x="142" y="181">\
-                                7\
-                            </text>\
-                            <text x="121" y="158">\
-                                8\
-                            </text>\
-                            <text x="112" y="129">\
-                                9\
-                            </text>\
-                            <text x="119" y="101">\
-                                10\
-                            </text>\
-                            <text x="137" y="81">\
-                                11\
-                            </text>\
-                        </g>\
-                        <text ng-attr-x="{{fromPos.x-20}}" ng-attr-y="{{fromPos.y+9}}" font-size="20">\
-                            {{ from }}\
-                        </text>\
-                        <text ng-attr-x="{{toPos.x-20}}" ng-attr-y="{{toPos.y+9}}" font-size="20">\
-                            {{ to }}\
-                        </text>\
-                    </svg>\
-                </div>',
-    controller: function($scope, $ionicScrollDelegate) {
-      var baseTime;
-      var centerPos;
-      var lastAngle;
-      var lastInverted;
-      var touching = false;
-      var element;
-      var drawRange = function() {
-        var parsedFrom = parseTime($scope.from);
-        var parsedTo = parseTime($scope.to);
+    $onInit: function() {
+      this.touching = false;
+      this.centerPos = {};
+      this.drawRange();
+    },
+    drawRange: function() {
+      if (this.from && this.to) {
+        var parsedFrom = parseTime(this.from);
+        var parsedTo = parseTime(this.to);
         var fromAngle = -90 + (parsedFrom.hours * 30 + parsedFrom.minutes * 0.5);
         var toAngle = -90 + (parsedTo.hours * 30 + parsedTo.minutes * 0.5);
-        $scope.semiCircle = regularSemiCircle(175, 125, 100, fromAngle, toAngle, false);
-        $scope.fromPos = positionOnCircle(175, 125, 100, fromAngle, 40, 14);
-        $scope.toPos = positionOnCircle(175, 125, 100, toAngle, 40, 14);
+        this.semiCircle = regularSemiCircle(175, 125, 100, fromAngle, toAngle, false);
+        this.fromPos = positionOnCircle(175, 125, 100, fromAngle, 40, 14);
+        this.toPos = positionOnCircle(175, 125, 100, toAngle, 40, 14);
+      }
+    },
+    greaterOrEqualTime: function(time1, time2) {
+      var parsedTime1 = parseTime(time1);
+      var parsedTime2 = parseTime(time2);
+      return (parsedTime1.hours > parsedTime2.hours) || ((parsedTime1.hours == parsedTime2.hours) && (parsedTime1.minutes >= parsedTime2.minutes));
+    },
+    greaterTime: function(time1, time2) {
+      var parsedTime1 = parseTime(time1);
+      var parsedTime2 = parseTime(time2);
+      return (parsedTime1.hours > parsedTime2.hours) || ((parsedTime1.hours == parsedTime2.hours) && (parsedTime1.minutes > parsedTime2.minutes));
+    },
+    onTouch: function(event) {
+      this.touching = true;
+      this.$ionicScrollDelegate.freezeAllScrolls(true);
+      var firstTouch = {
+        x: event.gesture.touches[0].clientX,
+        y: event.gesture.touches[0].clientY
       };
-      var greaterOrEquialTime = function(time1, time2) {
-        var parsedTime1 = parseTime(time1);
-        var parsedTime2 = parseTime(time2);
-        return (parsedTime1.hours > parsedTime2.hours) || ((parsedTime1.hours == parsedTime2.hours) && (parsedTime1.minutes >= parsedTime2.minutes));
+      var offset = event.currentTarget.getBoundingClientRect();
+      this.centerPos = {
+        x: offset.left + 175,
+        y: offset.top + 125
       };
-      var greaterTime = function(time1, time2) {
-        var parsedTime1 = parseTime(time1);
-        var parsedTime2 = parseTime(time2);
-        return (parsedTime1.hours > parsedTime2.hours) || ((parsedTime1.hours == parsedTime2.hours) && (parsedTime1.minutes > parsedTime2.minutes));
-      };
-      $scope.onTouch = function(event) {
-        touching = true;
-        $ionicScrollDelegate.freezeAllScrolls(true);
-        var firstTouch = {
+      this.baseTime = getModule(this.centerPos.x, this.centerPos.y, firstTouch.x, firstTouch.y) < 70 ? 0 : 12;
+      this.lastAngle = getAngle(this.centerPos.x, this.centerPos.y, firstTouch.x, firstTouch.y);
+      this.from = "" + (parseInt(this.lastAngle / 30) + this.baseTime) + ':' + ((this.lastAngle % 30) < 15 ? '00' : '30');
+      this.to = this.from;
+      this.lastInverted = false;
+      this.drawRange();
+      this.onChange({
+        from: this.from,
+        to: this.to
+      });
+      return true;
+    },
+    onRelease: function() {
+      this.touching = false;
+      this.$ionicScrollDelegate.freezeAllScrolls(false);
+      return true;
+    },
+    drag: function(event) {
+      if (this.touching) {
+        var lastTouch = {
           x: event.gesture.touches[0].clientX,
           y: event.gesture.touches[0].clientY
         };
-        var offset = event.currentTarget.getBoundingClientRect();
-        centerPos = {
-          x: offset.left + 175,
-          y: offset.top + 125
-        };
-        baseTime = getModule(centerPos.x, centerPos.y, firstTouch.x, firstTouch.y) < 70 ? 0 : 12;
-        lastAngle = getAngle(centerPos.x, centerPos.y, firstTouch.x, firstTouch.y);
-        $scope.from = "" + (parseInt(lastAngle / 30) + baseTime) + ':' + ((lastAngle % 30) < 15 ? '00' : '30');
-        $scope.to = $scope.from;
-        lastInverted = false;
-      };
-      $scope.onRelease = function() {
-        touching = false;
-        $ionicScrollDelegate.freezeAllScrolls(false);
-      };
-      $scope.drag = function(event) {
-        if (touching) {
-          var lastTouch = {
-            x: event.gesture.touches[0].clientX,
-            y: event.gesture.touches[0].clientY
-          };
-          var angle = getAngle(centerPos.x, centerPos.y, lastTouch.x, lastTouch.y);
-          if ((lastAngle > 270 && angle < 90) || (angle > 270 && lastAngle < 90)) {
-            baseTime = baseTime === 0 ? 12 : 0;
-          }
-          lastAngle = angle;
-          var time = "" + (parseInt(lastAngle / 30) + baseTime) + ':' + ((lastAngle % 30) < 15 ? '00' : '30');
-          var inverted;
-          if (lastInverted) {
-            inverted = !greaterTime(time, $scope.to);
-          } else {
-            inverted = !greaterOrEquialTime(time, $scope.from);
-          }
-          if (inverted) {
-            $scope.from = time;
-          } else {
-            $scope.to = time;
-          }
-          lastInverted = inverted;
+        var angle = getAngle(this.centerPos.x, this.centerPos.y, lastTouch.x, lastTouch.y);
+        if ((this.lastAngle > 270 && angle < 90) || (angle > 270 && this.lastAngle < 90)) {
+          this.baseTime = this.baseTime === 0 ? 12 : 0;
         }
-      };
-      $scope.$watch('from', function() {
-        drawRange();
-      });
-      $scope.$watch('to', function() {
-        drawRange();
-      });
-      drawRange();
+        this.lastAngle = angle;
+        var time = "" + (parseInt(this.lastAngle / 30) + this.baseTime) + ':' + ((this.lastAngle % 30) < 15 ? '00' : '30');
+        var inverted;
+        if (this.lastInverted) {
+          inverted = !this.greaterTime(time, this.to);
+        } else {
+          inverted = !this.greaterOrEqualTime(time, this.from);
+        }
+        if (inverted) {
+          this.from = time;
+        } else {
+          this.to = time;
+        }
+        this.lastInverted = inverted;
+        this.drawRange();
+        this.onChange({
+          from: this.from,
+          to: this.to
+        });
+      }
+      return true;
     }
-  };
+  }, {})
 });
 
 "use strict";
-angular.module('angularTouchWidgets.directives.clockViewer', []).directive('clockViewer', function() {
-  return {
-    restrict: "E",
-    scope: {
-      from: '=',
-      to: '=',
-      onTab: '&'
+angular.module('angularTouchWidgets.directives.clockViewer', []).component('clockViewer', {
+  bindings: {
+    from: '<',
+    to: '<',
+    onTap: '&'
+  },
+  template: "\n        <div>\n            <svg class=\"clock-viewer\" height=\"200\" width=\"240\" on-tap=\"$ctrl.onTap()\">\n                <defs>\n                    <filter id=\"shadow-{{$id}}\" x=\"-200%\" y=\"-200%\" width=\"450%\" height=\"450%\">\n                        <feOffset result=\"offOut\" in=\"SourceGraphic\" dx=\"0\" dy=\"2\"></feOffset>\n                        <feColorMatrix result=\"matrixOut\" in=\"offOut\" type=\"matrix\" values=\"0.4 0 0 0 0 0 0.4 0 0 0 0 0 0.4 0 0 0 0 0 1 0\"></feColorMatrix>\n                        <feGaussianBlur result=\"blurOut\" in=\"matrixOut\" stdDeviation=\"2\"></feGaussianBlur>\n                        <feBlend in=\"SourceGraphic\" in2=\"blurOut\" mode=\"normal\"></feBlend>\n                    </filter>\n                </defs>\n                <g filter=\"url(#shadow-{{$id}})\">\n                    <circle id=\"test\" cx=\"115\" cy=\"100\" r=\"70\" fill=\"white\"></circle>\n                    <path class=\"content-selection\" ng-attr-d=\"{{ $ctrl.semiCircle }}\"></path>\n                    <circle id=\"test\" cx=\"115\" cy=\"100\" r=\"65\" stroke=\"white\" fill=\"transparent\" stroke-width=\"8\"></circle>\n                    <circle id=\"test\" cx=\"115\" cy=\"100\" r=\"70\" stroke=\"black\" fill=\"transparent\" stroke-width=\"6\"></circle>\n                </g>\n                <text ng-attr-x=\"{{$ctrl.fromPos.x-20}}\" ng-attr-y=\"{{$ctrl.fromPos.y+7}}\" font-size=\"14\">\n                        {{ $ctrl.from }}\n                </text>\n                <text ng-attr-x=\"{{$ctrl.toPos.x-20}}\" ng-attr-y=\"{{$ctrl.toPos.y+7}}\" font-size=\"14\">\n                    {{ $ctrl.to }}\n                </text>\n            </svg>\n        </div>",
+  controller: ($traceurRuntime.createClass)(function() {}, {
+    $onInit: function() {
+      this.drawRange();
     },
-    replace: true,
-    template: '<div>\
-                    <svg class="clock-viewer" height="200" width="240" on-tap="onClick()">\
-                        <defs>\
-                            <filter id="shadow-{{$id}}" x="-200%" y="-200%" width="450%" height="450%">\
-                                <feOffset result="offOut" in="SourceGraphic" dx="0" dy="2"></feOffset>\
-                                <feColorMatrix result="matrixOut" in="offOut" type="matrix" values="0.4 0 0 0 0 0 0.4 0 0 0 0 0 0.4 0 0 0 0 0 1 0"></feColorMatrix>\
-                                <feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="2"></feGaussianBlur>\
-                                <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend>\
-                            </filter>\
-                        </defs>\
-                        <g filter="url(#shadow-{{$id}})">\
-                            <circle id="test" cx="115" cy="100" r="70" fill="white"></circle>\
-                            <path class="content-selection" ng-attr-d="{{ semiCircle }}"></path>\
-                            <circle id="test" cx="115" cy="100" r="65" stroke="white" fill="transparent" stroke-width="8"></circle>\
-                            <circle id="test" cx="115" cy="100" r="70" stroke="black" fill="transparent" stroke-width="6"></circle>\
-                        </g>\
-                        <text ng-attr-x="{{fromPos.x-20}}" ng-attr-y="{{fromPos.y+7}}" font-size="14">\
-                                {{ from }}\
-                        </text>\
-                        <text ng-attr-x="{{toPos.x-20}}" ng-attr-y="{{toPos.y+7}}" font-size="14">\
-                            {{ to }}\
-                        </text>\
-                    </svg>\
-                </div>',
-    controller: function($scope) {
-      var drawRange = function() {
-        var parsedFrom = parseTime($scope.from);
-        var parsedTo = parseTime($scope.to);
+    $onChanges: function() {
+      this.drawRange();
+    },
+    drawRange: function() {
+      if (this.from && this.to) {
+        var parsedFrom = parseTime(this.from);
+        var parsedTo = parseTime(this.to);
         var fromAngle = -90 + (parsedFrom.hours * 30 + parsedFrom.minutes * 0.5);
         var toAngle = -90 + (parsedTo.hours * 30 + parsedTo.minutes * 0.5);
-        $scope.semiCircle = regularSemiCircle(115, 100, 70, fromAngle, toAngle, false);
-        $scope.fromPos = positionOnCircle(115, 100, 70, fromAngle, 24, 14);
-        $scope.toPos = positionOnCircle(115, 100, 70, toAngle, 24, 14);
-      };
-      drawRange();
-      $scope.$watch('from', function() {
-        drawRange();
-      });
-      $scope.$watch('to', function() {
-        drawRange();
-      });
+        this.semiCircle = regularSemiCircle(115, 100, 70, fromAngle, toAngle, false);
+        this.fromPos = positionOnCircle(115, 100, 70, fromAngle, 24, 14);
+        this.toPos = positionOnCircle(115, 100, 70, toAngle, 24, 14);
+      }
     }
-  };
+  }, {})
 });
 function parseTime(time) {
   var r = time.split(":");
@@ -389,81 +260,35 @@ angular.module('angularTouchWidgets.directives.lightIntensityEditor', []).direct
 });
 
 "use strict";
-angular.module('angularTouchWidgets.directives.lightViewer', []).directive('lightViewer', function() {
-  return {
-    restrict: "E",
-    replace: true,
-    scope: {
-      on: '=?',
-      mode: '=?',
-      canTurnOff: '=?',
-      isRgb: '=?',
-      onTab: '&',
-      light: '=?',
-      modeStatic: '=?',
-      modeAnimated: '=?'
-    },
-    template: '  <div class="light-viewer" style="position: relative; height: 260px; width: 240px;">\
-                            <svg class="fx-zoom-normal" height="260" width="240" style="position: absolute;" ng-show="(on || !canTurnOff)">\
-                                <defs>\
-                                    <filter id="shadow-{{$id}}" x="-200%" y="-200%" width="450%" height="450%">\
-                                        <feOffset result="offOut" in="SourceGraphic" dx="0" dy="2"></feOffset>\
-                                        <feColorMatrix result="matrixOut" in="offOut" type="matrix" values="0.4 0 0 0 0 0 0.4 0 0 0 0 0 0.4 0 0 0 0 0 1 0"></feColorMatrix>\
-                                        <feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="2"></feGaussianBlur>\
-                                        <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend>\
-                                    </filter>\
-                                </defs>\
-                                <path fill="transparent" stroke-linecap="round" stroke="white" stroke-width="20" d="M 47 195 A 105 105 0 1 1 182 195" filter="url(#shadow-{{$id}})" stroke on-tap="onClick()"></path>\
-                                <path fill="transparent" stroke-linecap="round" stroke="#ccc" stroke-width="2" d="M 47 195 A 105 105 0 1 1 182 195" on-tap="onClick()"></path>\
-                                <path class="line-selection" fill="transparent" stroke-linecap="round" stroke-width="6" ng-attr-d="{{ arc }}" on-tap="onClick()"></path>\
-                            </svg>\
-                            <svg class="show-hide-opacity ng-hide" ng-show="canTurnOff" height="260" width="240" style="position: absolute;">\
-                                <defs>\
-                                    <filter id="button-shadow-{{$id}}" x="-200%" y="-200%" width="450%" height="450%">\
-                                        <feOffset result="offOut" in="SourceGraphic" dx="1" dy="4"></feOffset>\
-                                        <feColorMatrix result="matrixOut" in="offOut" type="matrix" values="0.4 0 0 0 0 0 0.4 0 0 0 0 0 0.4 0 0 0 0 0 1 0"></feColorMatrix>\
-                                        <feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="2"></feGaussianBlur>\
-                                        <feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend>\
-                                    </filter>\
-                                </defs>\
-                                \
-                                <g on-tap="toggle()">\
-                                    <path class="show-hide-opacity button-on-svg" ng-hide="on" fill="transparent" stroke-width="40" d="M 166 204 A 103 103 0 0 1 63 204" filter="url(#button-shadow-{{$id}})"></path>\
-                                    <path class="show-hide-opacity button-off-svg" ng-show="on" fill="transparent" stroke-width="40" d="M 166 204 A 103 103 0 0 1 63 204" filter="url(#button-shadow-{{$id}})"></path>\
-                                </g>\
-                            </svg>\
-                            <div style="height: 0; position: absolute; top: 41px; left: 39px;">\
-                                <div class="fx-rotate-clock round-button center override button-shadow ng-hide" ng-show="isRgb && (on || !canTurnOff) && mode===\'static\'" ng-style="{\'background-color\': \'rgb(\'+modeStatic.color.r+\',\'+modeStatic.color.g+\',\'+modeStatic.color.b+\')\'}" on-tap="onClick()">\
-                                </div>\
-                                <div class="fx-rotate-clock round-button center override button-shadow ng-hide" ng-show="isRgb && (on || !canTurnOff) && mode===\'animation\'" style="overflow: hidden;">\
-                                    <div class="animated-color" style="height: 100%; width: 100%;" ng-style="{\'-webkit-animation-duration\': modeAnimated.speed+\'s\', \'animation-duration\': modeAnimated.speed+\'s\', \'-webkit-animation-name\': modeAnimated.animation, \'animation-name\': modeAnimated.animation}" on-tap="onClick()"></div>\
-                                </div>\
-                                <div class="fx-rotate-clock round-button center override button-on button-shadow ng-hide" ng-show="!isRgb && (on || !canTurnOff)" style="height: 150px; width: 150px;" on-tap="onClick()">\
-                                    <span style="font-size: 42px;">{{ modeStatic.intensity }}%</span>\
-                                </div>\
-                                <div class="fx-rotate-clock round-button center override button-off button-shadow ng-hide" ng-show="!(on || !canTurnOff)" on-tap="toggle()">\
-                                    <span style="font-size: 34px; color: white;">Apagado</span>\
-                                </div>\
-                            </div>\
-                            <div class="center show-hide-opacity" ng-show="canTurnOff" style="position: absolute; top: 197px; left: 65px; height: 40px; width: 100px;" on-tap="toggle()">\
-                                <i class="icon ion-power" style="color: white; font-size: 26px;"></i>\
-                            </div>\
-                        </div>',
-    controller: function($scope) {
-      if ($scope.light) {
-        $scope.modeStatic = $scope.light;
+angular.module('angularTouchWidgets.directives.lightViewer', []).component('lightViewer', {
+  bindings: {
+    on: '<?',
+    mode: '<?',
+    canTurnOff: '<?',
+    isRgb: '<?',
+    onTab: '&',
+    light: '<?',
+    modeStatic: '<?',
+    modeAnimated: '<?',
+    onChange: '&'
+  },
+  template: "  \n            <div class=\"light-viewer\" style=\"position: relative; height: 260px; width: 240px;\">\n                <svg class=\"fx-zoom-normal\" height=\"260\" width=\"240\" style=\"position: absolute;\" ng-show=\"($ctrl.on || !$ctrl.canTurnOff)\">\n                    <defs>\n                        <filter id=\"shadow-{{$id}}\" x=\"-200%\" y=\"-200%\" width=\"450%\" height=\"450%\">\n                            <feOffset result=\"offOut\" in=\"SourceGraphic\" dx=\"0\" dy=\"2\"></feOffset>\n                            <feColorMatrix result=\"matrixOut\" in=\"offOut\" type=\"matrix\" values=\"0.4 0 0 0 0 0 0.4 0 0 0 0 0 0.4 0 0 0 0 0 1 0\"></feColorMatrix>\n                            <feGaussianBlur result=\"blurOut\" in=\"matrixOut\" stdDeviation=\"2\"></feGaussianBlur>\n                            <feBlend in=\"SourceGraphic\" in2=\"blurOut\" mode=\"normal\"></feBlend>\n                        </filter>\n                    </defs>\n                    <path fill=\"transparent\" stroke-linecap=\"round\" stroke=\"white\" stroke-width=\"20\" d=\"M 47 195 A 105 105 0 1 1 182 195\" filter=\"url(#shadow-{{$id}})\" stroke on-tap=\"$ctrl.onTap()\"></path>\n                    <path fill=\"transparent\" stroke-linecap=\"round\" stroke=\"#ccc\" stroke-width=\"2\" d=\"M 47 195 A 105 105 0 1 1 182 195\" on-tap=\"$ctrl.onTap()\"></path>\n                    <path class=\"line-selection\" fill=\"transparent\" stroke-linecap=\"round\" stroke-width=\"6\" ng-attr-d=\"{{ $ctrl.arc }}\" on-tap=\"$ctrl.onTap()\"></path>\n                </svg>\n                <svg class=\"show-hide-opacity ng-hide\" ng-show=\"$ctrl.canTurnOff\" height=\"260\" width=\"240\" style=\"position: absolute;\">\n                    <defs>\n                        <filter id=\"button-shadow-{{$id}}\" x=\"-200%\" y=\"-200%\" width=\"450%\" height=\"450%\">\n                            <feOffset result=\"offOut\" in=\"SourceGraphic\" dx=\"1\" dy=\"4\"></feOffset>\n                            <feColorMatrix result=\"matrixOut\" in=\"offOut\" type=\"matrix\" values=\"0.4 0 0 0 0 0 0.4 0 0 0 0 0 0.4 0 0 0 0 0 1 0\"></feColorMatrix>\n                            <feGaussianBlur result=\"blurOut\" in=\"matrixOut\" stdDeviation=\"2\"></feGaussianBlur>\n                            <feBlend in=\"SourceGraphic\" in2=\"blurOut\" mode=\"normal\"></feBlend>\n                        </filter>\n                    </defs>\n                    \n                    <g on-tap=\"$ctrl.toggle()\">\n                        <path class=\"show-hide-opacity button-on-svg\" ng-hide=\"$ctrl.on\" fill=\"transparent\" stroke-width=\"40\" d=\"M 166 204 A 103 103 0 0 1 63 204\" filter=\"url(#button-shadow-{{$id}})\"></path>\n                        <path class=\"show-hide-opacity button-off-svg\" ng-show=\"$ctrl.on\" fill=\"transparent\" stroke-width=\"40\" d=\"M 166 204 A 103 103 0 0 1 63 204\" filter=\"url(#button-shadow-{{$id}})\"></path>\n                    </g>\n                </svg>\n                <div style=\"height: 0; position: absolute; top: 41px; left: 39px;\">\n                    <div class=\"fx-rotate-clock round-button center override button-shadow ng-hide\" ng-show=\"$ctrl.isRgb && ($ctrl.on || !$ctrl.canTurnOff) && $ctrl.mode===\'static\'\" ng-style=\"{\'background-color\': \'rgb(\'+$ctrl.modeStatic.color.r+\',\'+$ctrl.modeStatic.color.g+\',\'+$ctrl.modeStatic.color.b+\')\'}\" on-tap=\"$ctrl.onTap()\">\n                    </div>\n                    <div class=\"fx-rotate-clock round-button center override button-shadow ng-hide\" ng-show=\"$ctrl.isRgb && ($ctrl.on || !$ctrl.canTurnOff) && $ctrl.mode===\'animation\'\" style=\"overflow: hidden;\">\n                        <div class=\"animated-color\" style=\"height: 100%; width: 100%;\" ng-style=\"{\'-webkit-animation-duration\': $ctrl.modeAnimated.speed+\'s\', \'animation-duration\': $ctrl.modeAnimated.speed+\'s\', \'-webkit-animation-name\': $ctrl.modeAnimated.animation, \'animation-name\': $ctrl.modeAnimated.animation}\" on-tap=\"$ctrl.onTap()\"></div>\n                    </div>\n                    <div class=\"fx-rotate-clock round-button center override button-on button-shadow ng-hide\" ng-show=\"!$ctrl.isRgb && ($ctrl.on || !$ctrl.canTurnOff)\" style=\"height: 150px; width: 150px;\" on-tap=\"$ctrl.onTap()\">\n                        <span style=\"font-size: 42px;\">{{ $ctrl.modeStatic.intensity }}%</span>\n                    </div>\n                    <div class=\"fx-rotate-clock round-button center override button-off button-shadow ng-hide\" ng-show=\"!($ctrl.on || !$ctrl.canTurnOff)\" on-tap=\"$ctrl.toggle()\">\n                        <span style=\"font-size: 34px; color: white;\">Apagado</span>\n                    </div>\n                </div>\n                <div class=\"center show-hide-opacity\" ng-show=\"$ctrl.canTurnOff\" style=\"position: absolute; top: 197px; left: 65px; height: 40px; width: 100px;\" on-tap=\"$ctrl.toggle()\">\n                    <i class=\"icon ion-power\" style=\"color: white; font-size: 26px;\"></i>\n                </div>\n            </div>",
+  controller: ($traceurRuntime.createClass)(function() {}, {
+    $onInit: function() {
+      if (this.light) {
+        this.modeStatic = this.light;
       }
-      if ($scope.on === undefined) {
-        $scope.on = true;
+      if (angular.isUndefined(this.on)) {
+        this.on = true;
       }
-      if ($scope.canTurnOff === undefined) {
-        $scope.canTurnOff = true;
+      if (angular.isUndefined(this.canTurnOff)) {
+        this.canTurnOff = true;
       }
-      if ($scope.isRgb === undefined) {
-        $scope.isRgb = true;
+      if (angular.isUndefined(this.isRgb)) {
+        this.isRgb = true;
       }
-      $scope.mode = $scope.mode || 'static';
-      $scope.modeStatic = $scope.modeStatic || {
+      this.mode = this.mode || 'static';
+      this.modeStatic = this.modeStatic || {
         color: {
           r: 0,
           g: 0,
@@ -471,78 +296,59 @@ angular.module('angularTouchWidgets.directives.lightViewer', []).directive('ligh
         },
         intensity: 0
       };
-      $scope.modeAnimated = $scope.modeAnimated || {
+      this.modeAnimated = this.modeAnimated || {
         animation: "mode1",
         speed: 1
       };
-      var drawRange = function() {
-        if (!$scope.isRgb || $scope.mode === 'static') {
-          $scope.arc = regularArcData(115, 115, 105, 130, 135 + ($scope.modeStatic.intensity * 2.75), false);
-        } else {
-          $scope.arc = regularArcData(115, 115, 105, 130, 135 + ($scope.modeAnimated.speed * 27.5), false);
-        }
-      };
-      drawRange();
-      $scope.$watch('modeStatic.intensity', function() {
-        drawRange();
-      });
-      $scope.$watch('modeAnimated.speed', function() {
-        drawRange();
-      });
-      $scope.$watch('mode', function() {
-        drawRange();
-      });
-      $scope.toggle = function() {
-        $scope.on = !$scope.on;
-      };
+      this.drawRange();
+    },
+    $onChanges: function() {
+      this.drawRange();
+    },
+    drawRange: function() {
+      if (!this.isRgb || this.mode === 'static') {
+        this.arc = regularArcData(115, 115, 105, 130, 135 + (this.modeStatic.intensity * 2.75), false);
+      } else {
+        this.arc = regularArcData(115, 115, 105, 130, 135 + (this.modeAnimated.speed * 27.5), false);
+      }
+    },
+    toggle: function() {
+      this.on = !this.on;
     }
-  };
+  }, {})
 });
 
 "use strict";
-angular.module('angularTouchWidgets.directives.modeSelector', []).directive('modeSelector', function() {
-  return {
-    restrict: "E",
-    scope: {
-      modes: '=',
-      selectedMode: '='
+angular.module('angularTouchWidgets.directives.modeSelector', []).component('modeSelector', {
+  bindings: {
+    modes: '=',
+    selectedMode: '=',
+    onChange: '&'
+  },
+  template: "\n        <div  ng-if=\"$ctrl.selectedMode\">\n            <div class=\"mode-selector\" ng-class=\"$ctrl.selectedMode\" style=\"height: 26px; width: 250px; float: right; margin: 10px 10px 10px 0\" on-tap=\"$ctrl.changeMode()\">\n                <div style=\"height: 100%; width: 100%; transform: translate(112px); -webkit-transform: translate(112px)\">\n                    <div on-tap=\"$ctrl.changeMode()\" class=\"button-shadow\" style=\"overflow: hidden; position: absolute; width: 40px;height: 40px; border-radius: 20px; transform: translate(125px); -webkit-transform: translate(125px); margin-left: -17px; margin-top: -6px;\">\n                        <div class=\"mode-selector-botton background-animation\" style=\"height: 100%; width: 100%;\"></div>\n                    </div>\n                    <div class=\"transform-animation\" style=\"height: 100%; width: 100%; position: absolute; top: 0; left: 0;\" ng-style=\"{transform: \'rotate(\'+ $ctrl.showMode * (-360 / $ctrl.modes.length)+\'deg)\', \'-webkit-transform\': \'rotate(\'+ $ctrl.showMode * (-360 / $ctrl.modes.length)+\'deg)\'}\">\n                        <div ng-repeat=\"mode in $ctrl.modes\" class=\"show-hide-opacity\" ng-style=\"{transform: \'rotate(\'+ $index * (360 / $ctrl.modes.length) +\'deg) translate(-125px)\', \'-webkit-transform\': \'rotate(\'+ $index * (360 / $ctrl.modes.length) +\'deg) translate(-125px)\'}\" style=\"width: 250px; height: 26px; text-align: end; position: absolute;\" ng-show=\"$ctrl.currentMode==$index\">\n                            <span style=\"margin-right: 20px\">\n                                {{ mode.display }}\n                            </span>\n                            <i class=\"{{ mode.icon }}\" style=\"margin-right: -15px; font-size: 30px; vertical-align: middle;\"></i>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>",
+  controller: ($traceurRuntime.createClass)(function() {}, {
+    $onInit: function() {
+      this.showMode = this.currentMode = this.getNumberOfMode(this.selectedMode);
+      this.selectedMode = this.modes[this.currentMode].name;
     },
-    template: '<div class="mode-selector" ng-class="selectedMode" style="height: 26px; width: 250px; float: right; margin: 10px 10px 10px 0" on-tap="changeMode()">\
-                    <div style="height: 100%; width: 100%; transform: translate(112px); -webkit-transform: translate(112px)">\
-                        <div on-tap="changeMode()" class="button-shadow" style="overflow: hidden; position: absolute; width: 40px;height: 40px; border-radius: 20px; transform: translate(125px); -webkit-transform: translate(125px); margin-left: -17px; margin-top: -6px;">\
-                            <div class="mode-selector-botton background-animation" style="height: 100%; width: 100%;"></div>\
-                        </div>\
-                        <div class="transform-animation" style="height: 100%; width: 100%; position: absolute; top: 0; left: 0;" ng-style="{transform: \'rotate(\'+ showMode * (-360 / modes.length)+\'deg)\', \'-webkit-transform\': \'rotate(\'+ showMode * (-360 / modes.length)+\'deg)\'}">\
-                            <div ng-repeat="mode in modes" class="show-hide-opacity" ng-style="{transform: \'rotate(\'+ $index * (360 / modes.length) +\'deg) translate(-125px)\', \'-webkit-transform\': \'rotate(\'+ $index * (360 / modes.length) +\'deg) translate(-125px)\'}" style="width: 250px; height: 26px; text-align: end; position: absolute;" ng-show="currentMode==$index">\
-                                <span style="margin-right: 20px">\
-                                    {{ mode.display }}\
-                                </span>\
-                                <i class="{{ mode.icon }}" style="margin-right: -15px; font-size: 30px; vertical-align: middle;"></i>\
-                            </div>\
-                        </div>\
-                    </div>\
-                </div>',
-    controller: function($scope) {
-      var getNumberOfMode = function(selectedMode) {
-        var modesNames = [];
-        angular.forEach($scope.modes, function(mode) {
-          modesNames.push(mode.name);
-        });
-        var index = modesNames.indexOf(selectedMode);
-        if (index == -1) {
-          index = 0;
-        }
-        return index;
-      };
-      $scope.showMode = $scope.currentMode = getNumberOfMode($scope.selectedMode);
-      $scope.selectedMode = $scope.modes[$scope.currentMode].name;
-      $scope.changeMode = function() {
-        $scope.showMode = $scope.showMode + 1;
-        $scope.currentMode = $scope.showMode % $scope.modes.length;
-        $scope.selectedMode = $scope.modes[$scope.currentMode].name;
-      };
+    getNumberOfMode: function(selectedMode) {
+      var modesNames = [];
+      angular.forEach(this.modes, function(mode) {
+        modesNames.push(mode.name);
+      });
+      var index = modesNames.indexOf(selectedMode);
+      if (index == -1) {
+        index = 0;
+      }
+      return index;
+    },
+    changeMode: function() {
+      this.showMode = this.showMode + 1;
+      this.currentMode = this.showMode % this.modes.length;
+      this.selectedMode = this.modes[this.currentMode].name;
+      this.onChange({selectedMode: this.selectedMode});
     }
-  };
+  }, {})
 });
 
 "use strict";

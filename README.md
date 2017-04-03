@@ -16,6 +16,7 @@ To install execute
     
 Add the project files on your html
 
+    <script src="bower/angular-touch-widgets/dist/traceur.js"></script>
     <script src="bower/angular-touch-widgets/dist/angular-touch-widgets.js"></script>
     <link rel="stylesheet" href="bower/angular-touch-widgets/dist/angular-touch-widgets.css">
     

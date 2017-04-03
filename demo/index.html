@@ -57,9 +57,9 @@
     <br/>
     &lt;clock-viewer from=&quot;from&quot; to=&quot;to&quot; on-tab=&quot;alert('click')&quot;&gt;&lt;/clock-viewer&gt;
 </div>
-<div ng-init="from= '01:00'; to= '03:30';" class="example">
-    <clock-editor from="from" to="to"></clock-editor>
-    <clock-viewer from="from" to="to" on-tab="alert('click')"></clock-viewer>
+<div ng-init="fromClock= '01:00'; toClock= '03:30';" class="example">
+    <clock-editor from="fromClock" to="toClock" on-change="fromClock = from; toClock = to;"></clock-editor>
+    <clock-viewer from="fromClock" to="toClock" on-tab="alert('click')"></clock-viewer>
 </div>
 
 
@@ -131,6 +131,8 @@
     &lt;light-color-editor color=&quot;light.color&quot;&gt;&lt;/light-color-editor&gt;
     <br/>
     &lt;light-viewer on=&quot;on&quot; light=&quot;light&quot;&gt;&lt;/light-viewer&gt;
+    <br/>
+    &lt;light-viewer on=&quot;on&quot; light=&quot;light&quot; is-rgb=&quot;false&quot;&gt;&lt;/light-viewer&gt;
 </div>
 <div ng-init="light= {color: {r: 100, g: 0, b: 255}, intensity: 100}; on=true" class="example">
     <light-intensity-editor intensity="light.intensity"></light-intensity-editor>
@@ -141,6 +143,7 @@
         on: {{on}}
     </p>
     <light-viewer on="on" light="light"></light-viewer>
+    <light-viewer on="on" light="light" is-rgb="false"></light-viewer>
 </div>
 
 
@@ -184,6 +187,7 @@
 <script src="bower/angular-ui-router/release/angular-ui-router.js"></script>
 <script src="bower/ionic/release/js/ionic.js"></script>
 <script src="bower/ionic/release/js/ionic-angular.js"></script>
+<script src="dist/traceur.js"></script>
 <script src="dist/angular-touch-widgets.js"></script>
 <script src="js/demo.js"></script>
 </body>

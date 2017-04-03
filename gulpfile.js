@@ -52,9 +52,9 @@ var files = [
 var scssFiles = path.join(rootDirectory, './scss/**/*.scss');
 
 var lintFiles = [
-  'gulpfile.js',
-  // Karma configuration
-  'karma-*.conf.js'
+    'gulpfile.js',
+    // Karma configuration
+    'karma-*.conf.js'
 ].concat(sourceFiles);
 
 gulp.task('build', ['src', 'sass', 'fonts']);
@@ -63,16 +63,21 @@ gulp.task('build', ['src', 'sass', 'fonts']);
  * Javascript
  */
 gulp.task('src', function() {
-  gulp.src(sourceFiles)
-    .pipe(plumber())
-    .pipe(sourcemaps.init())
-    .pipe(traceur())
-    .pipe(concat('angular-touch-widgets.js'))
-    .pipe(gulp.dest('./dist/'))
-    .pipe(uglify())
-    .pipe(rename('angular-touch-widgets.min.js'))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest('./dist'));
+    return gulp.src(sourceFiles)
+        .pipe(plumber())
+        .pipe(sourcemaps.init())
+        .pipe(traceur())
+        .pipe(concat('angular-touch-widgets.js'))
+        .pipe(gulp.dest('./dist/'))
+        .pipe(uglify())
+        .pipe(rename('angular-touch-widgets.min.js'))
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest('./dist'))
+        .pipe(gulp.src([traceur.RUNTIME_PATH]))
+        .pipe(concat('traceur.js'))
+        .pipe(gulp.dest('./dist/'))
+        .pipe(rename('traceur.min.js'))
+        .pipe(gulp.dest('./dist'));
 });
 
 /**
@@ -98,7 +103,7 @@ gulp.task('sass', function(done) {
  * Fonts
  */
 gulp.task('fonts', function() {
-    gulp.src('./bower/Ionicons/fonts/**/*.{ttf,woff,eot,svg}')
+    return gulp.src('./bower/Ionicons/fonts/**/*.{ttf,woff,eot,svg}')
         .pipe(gulp.dest('./fonts/'));
 });
 
@@ -106,7 +111,7 @@ gulp.task('fonts', function() {
  * Process
  */
 gulp.task('process-all', function (done) {
-  runSequence('jshint', 'test-src', 'build', done);
+    runSequence('jshint', 'test-src', 'build', done);
 });
 
 /**
@@ -114,49 +119,49 @@ gulp.task('process-all', function (done) {
  */
 gulp.task('watch', function () {
 
-  // Watch JavaScript files
-  gulp.watch(files, ['build']);
+    // Watch JavaScript files
+    return gulp.watch(files, ['build']);
 });
 
 /**
  * Validate source JavaScript
  */
 gulp.task('jshint', function () {
-  return gulp.src(lintFiles)
-    .pipe(plumber())
-    .pipe(jshint())
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(jshint.reporter('fail'));
+    return gulp.src(lintFiles)
+        .pipe(plumber())
+        .pipe(jshint())
+        .pipe(jshint.reporter('jshint-stylish'))
+        .pipe(jshint.reporter('fail'));
 });
 
 /**
  * Run test once and exit
  */
 gulp.task('test-src', function (done) {
-  karma.start({
-    configFile: __dirname + '/karma-src.conf.js',
-    singleRun: true
-  }, done);
+    karma.start({
+        configFile: __dirname + '/karma-src.conf.js',
+        singleRun: true
+    }, done);
 });
 
 /**
  * Run test once and exit
  */
 gulp.task('test-dist-concatenated', function (done) {
-  karma.start({
-    configFile: __dirname + '/karma-dist-concatenated.conf.js',
-    singleRun: true
-  }, done);
+    karma.start({
+        configFile: __dirname + '/karma-dist-concatenated.conf.js',
+        singleRun: true
+    }, done);
 });
 
 /**
  * Run test once and exit
  */
 gulp.task('test-dist-minified', function (done) {
-  karma.start({
-    configFile: __dirname + '/karma-dist-minified.conf.js',
-    singleRun: true
-  }, done);
+    karma.start({
+        configFile: __dirname + '/karma-dist-minified.conf.js',
+        singleRun: true
+    }, done);
 });
 
 /**
@@ -170,7 +175,7 @@ gulp.task('demo', function() {
 });
 
 gulp.task('default', function () {
-  runSequence('process-all', 'watch');
+    runSequence('process-all', 'watch');
 });
 
 gulp.task('develop', function () {
